@@ -15,12 +15,12 @@
    <router-view></router-view>
    <template v-if="error">
      <v-snackbar
-             :timeout="5000"
-             :bottom="true"
-             :multi-line="true"
-             :value="true"
-             @input="onClose"
-             color="error"
+       :timeout="5000"
+       :bottom="true"
+       :multi-line="true"
+       :value="true"
+       @input="onClose"
+       color="error"
      >
        <v-icon class="mr-3" left large>error</v-icon>{{error}}
        <v-btn flat color="white" @click.native="onClose">Close</v-btn>
