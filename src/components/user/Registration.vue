@@ -79,6 +79,12 @@
         }
         if (this.valid) {
           this.$store.dispatch('registerUser', user)
+            .then(response => {
+              this.$router.push('/')
+            })
+            .catch(error => {
+              console.log(error)
+            })
         }
       }
     },

@@ -18,7 +18,9 @@ Vue.use(Vuetify, {
 })
 Vue.use(VueResource)
 Vue.use(VueCookie)
+
 Vue.config.productionTip = false
+Vue.http.options.emulateJSON = true
 
 /* eslint-disable no-new */
 new Vue({

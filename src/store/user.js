@@ -18,21 +18,30 @@ export default {
   },
   actions: {
     registerUser ({commit}, payload) {
-      Vue.http.interceptors.push((request, next) => {
-        commit('setLoading', true)
-        next(response => {
+      let regRes = Vue.resource('/api/register.php')
+      commit('setLoading', true)
+
+      return new Promise((resolve, reject) => {
+        regRes.save({user: payload}).then(response => {
           commit('setLoading', false)
+
+          let user = response.body.user
+
+          if (user !== 'error') {
+            if (user !== 'errorUserExists') {
+              commit('setUser', user)
+              Vue.cookie.set('user', JSON.stringify(user), 30)
+              resolve(response)
+            } else {
+              commit('setError', 'Such login already exists')
+              reject(response.body)
+            }
+          }
+        }, response => {
+          commit('setLoading', false)
+          reject(response.body)
         })
       })
-      Vue.http.get('http://remindwordserver.loc/register.php', {params: payload}).then(response => {
-        let user = response.body
-
-        if (user !== 'error') {
-          if (user !== 'errorUserExists') {
-            commit('setUser', user)
-          } else commit('setError', 'Such login already exists')
-        } else commit('setError', 'Server error')
-      }, response => {})
     },
     cleanError ({commit}) {
       commit('setError', null)
