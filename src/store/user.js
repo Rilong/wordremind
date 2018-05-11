@@ -23,9 +23,8 @@ export default {
       commit('setError', null)
 
       try {
-        commit('setLoading', false)
-
         let user = await regRes.save({user: payload})
+        commit('setLoading', false)
         let userData = user.body.user
 
         commit('setUser', userData)
@@ -42,6 +41,23 @@ export default {
             commit('setError', 'Error server')
             break
         }
+        throw error
+      }
+    },
+    async loginUser ({commit}, payload) {
+      let loginResource = Vue.resource('/api/login.php')
+      commit('setLoading', true)
+      commit('setError', null)
+      try {
+        let userResponse = await loginResource.get(payload)
+        commit('setLoading', false)
+
+        let user = userResponse.body
+        Vue.cookie.set('user', JSON.stringify(user), 30)
+        commit('setUser', user)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', error.body)
         throw error
       }
     },
