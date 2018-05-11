@@ -1,21 +1,23 @@
 <template>
-  <v-dialog>
+  <v-dialog width="800" v-model="modal">
     <v-btn slot="activator" color="success btn-v-center" round>Open</v-btn>
-    <v-card color="cyan darken-2" class="white--text">
-      <v-container fluid grid-list-lg>
-        <v-layout row>
-          <v-flex xs7>
-            <div>
-              <div class="headline">Supermodel</div>
-              <div>Foster the People</div>
-            </div>
+    <v-card>
+      <v-container>
+        <v-layout>
+          <v-flex>
+            <h2 class="display-2">{{word}} - <span class="gray-text">text translated</span></h2>
+            <v-divider></v-divider>
+            <p class="subheading mt-3">Lorem ipsum dolor sit - <span class="gray-text">text translated</span></p>
+            <p class="subheading mt-3">Lorem ipsum dolor sit - <span class="gray-text">text translated</span></p>
+            <v-divider></v-divider>
           </v-flex>
-          <v-flex xs5>
-            <v-card-media
-                    src="/static/doc-images/cards/foster.jpg"
-                    height="125px"
-                    contain
-            ></v-card-media>
+        </v-layout>
+        <v-layout>
+          <v-flex xs12>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="error" @click="onClose" flat>Close</v-btn>
+            </v-card-actions>
           </v-flex>
         </v-layout>
       </v-container>
@@ -27,7 +29,13 @@
   export default {
     data () {
       return {
-        name: 'name'
+        word: 'word',
+        modal: false
+      }
+    },
+    methods: {
+      onClose () {
+        this.modal = false
       }
     }
   }
@@ -40,5 +48,9 @@
     margin-top: 0;
     margin-bottom: 0;
     transform: translateY(33%);
+  }
+
+  .gray-text {
+    color: #BDBDBD;
   }
 </style>
