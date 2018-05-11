@@ -52,8 +52,8 @@ export default {
         throw error
       }
     },
-    logoutUser ({commit}) {
-      commit('setError', null)
+    logoutUser ({commit, dispatch}) {
+      dispatch('cleanError')
       commit('setUser', null)
       Vue.cookie.delete('user')
     },
