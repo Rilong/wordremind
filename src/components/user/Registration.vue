@@ -51,8 +51,6 @@
 </template>
 
 <script>
-  /* eslint-disable handle-callback-err */
-
   export default {
     data () {
       return {
@@ -81,7 +79,7 @@
         }
         if (this.valid) {
           this.$store.dispatch('registerUser', user)
-            .then(response => {
+            .then(() => {
               this.$router.push('/')
             }).catch(() => {})
         }
