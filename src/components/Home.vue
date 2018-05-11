@@ -1,16 +1,25 @@
 <template>
   <v-layout>
       <template v-if="isUser">
-        <h1> {{name}} Logged in</h1>
+        <template>
+          <v-layout>
+            <v-flex>
+              <v-container grid-list-lg class="pt-5">
+                <word-card></word-card>
+              </v-container>
+            </v-flex>
+          </v-layout>
+        </template>
       </template>
       <template v-else>
-        <appLogin></appLogin>
+        <app-login></app-login>
       </template>
   </v-layout>
 </template>
 
 <script>
   import appLogin from './user/Login'
+  import wordCard from './words/Card'
   export default {
     data () {
       return {
@@ -23,7 +32,8 @@
       }
     },
     components: {
-      appLogin
+      appLogin,
+      wordCard
     }
   }
 </script>
