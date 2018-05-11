@@ -17,31 +17,42 @@ export default {
     }
   },
   actions: {
-    registerUser ({commit}, payload) {
+    async registerUser ({commit}, payload) {
       let regRes = Vue.resource('/api/register.php')
       commit('setLoading', true)
+      commit('setError', null)
 
-      return new Promise((resolve, reject) => {
-        regRes.save({user: payload}).then(response => {
-          commit('setLoading', false)
+      try {
+        commit('setLoading', false)
 
-          let user = response.body.user
+        let user = await regRes.save({user: payload})
+        let userData = user.body.user
 
-          if (user !== 'error') {
-            if (user !== 'errorUserExists') {
-              commit('setUser', user)
-              Vue.cookie.set('user', JSON.stringify(user), 30)
-              resolve(response)
-            } else {
-              commit('setError', 'Such login already exists')
-              reject(response.body)
-            }
-          }
-        }, response => {
-          commit('setLoading', false)
-          reject(response.body)
-        })
-      })
+        commit('setUser', userData)
+        Vue.cookie.set('user', JSON.stringify(userData), 30)
+      } catch (error) {
+        commit('setLoading', false)
+        commit('setError', null)
+
+        switch (error.body.user) {
+          case 'errorUserExists' :
+            commit('setError', 'Such login already exists')
+            break
+          case 'error' :
+            commit('setError', 'Error server')
+            break
+        }
+        throw error
+      }
+    },
+    logoutUser ({commit}) {
+      commit('setError', null)
+      commit('setUser', null)
+      Vue.cookie.delete('user')
+    },
+    autoLogin ({commit}) {
+      let user = JSON.parse(Vue.cookie.get('user'))
+      commit('setUser', user)
     },
     cleanError ({commit}) {
       commit('setError', null)

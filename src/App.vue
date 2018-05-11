@@ -6,9 +6,13 @@
      </v-toolbar-title>
      <v-spacer></v-spacer>
      <v-toolbar-items class="hidden-sm-and-down">
-       <v-btn flat tag="button" v-for="link in menu" :to="link.to" :key="link.title">
+       <v-btn flat tag="button" v-for="link in links" :to="link.to" :key="link.title">
          <v-icon left>{{link.icon}}</v-icon>
          {{link.title}}
+       </v-btn>
+       <v-btn v-if="isUser" flat tag="button" @click="onLogout">
+         <v-icon left>exit_to_app</v-icon>
+         Exit
        </v-btn>
      </v-toolbar-items>
    </v-toolbar>
@@ -34,20 +38,37 @@ export default {
   data () {
     return {
       title: '',
-      menu: [
-        {to: '/registration', title: 'Registration', icon: 'how_to_reg'}
-      ]
+      menu: null
     }
   },
   computed: {
     error () {
       return this.$store.getters.error
+    },
+    isUser () {
+      return this.$store.getters.isUser
+    },
+    links () {
+      if (this.isUser) {
+        return []
+      } else {
+        return [
+          {to: '/registration', title: 'Registration', icon: 'how_to_reg'}
+        ]
+      }
     }
   },
   methods: {
     onClose () {
       this.$store.dispatch('cleanError')
+    },
+    onLogout () {
+      this.$store.dispatch('logoutUser')
+      this.$router.push('/')
     }
+  },
+  created () {
+    this.$store.dispatch('autoLogin')
   }
 }
 </script>
