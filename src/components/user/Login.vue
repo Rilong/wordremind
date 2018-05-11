@@ -63,15 +63,17 @@
       },
       methods: {
         onSubmit () {
-          let userData = {
-            login: this.login,
-            password: this.password
+          if (this.valid) {
+            let userData = {
+              login: this.login,
+              password: this.password
+            }
+            this.$store.dispatch('loginUser', userData)
+              .then(() => {
+                this.$router.push('/')
+              })
+              .catch(() => {})
           }
-          this.$store.dispatch('loginUser', userData)
-            .then(() => {
-              this.$router.push('/')
-            })
-            .catch(() => {})
         }
       }
     }
