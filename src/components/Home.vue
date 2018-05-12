@@ -4,7 +4,10 @@
         <template>
           <v-layout>
             <v-flex>
-              <v-container grid-list-lg class="pt-5">
+              <v-container grid-list-lg>
+                <div class="text-xs-right mb-4">
+                  <add-modal></add-modal>
+                </div>
                 <word-card></word-card>
               </v-container>
             </v-flex>
@@ -20,6 +23,8 @@
 <script>
   import appLogin from './user/Login'
   import wordCard from './words/Card'
+  import addModal from './words/AddModal'
+
   export default {
     data () {
       return {
@@ -33,7 +38,8 @@
     },
     components: {
       appLogin,
-      wordCard
+      wordCard,
+      addModal
     }
   }
 </script>

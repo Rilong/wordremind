@@ -10,7 +10,7 @@
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
             <open-modal></open-modal>
-            <v-btn color="warning btn-v-center" round>Edit</v-btn>
+            <edit-modal></edit-modal>
             <v-btn color="error btn-v-center" round>Delete</v-btn>
           </v-flex>
           </v-layout>
@@ -21,6 +21,7 @@
 
 <script>
   import openModal from './OpenModal'
+  import editModal from './EditModal'
   export default {
     data () {
       return {
@@ -30,7 +31,8 @@
     },
     methods: {},
     components: {
-      openModal
+      openModal,
+      editModal
     }
   }
 </script>
