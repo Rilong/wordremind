@@ -87,6 +87,9 @@
           .then(response => {
             this.localLoading = false
             this.wordtranslated = response
+          }).catch(e => {
+            this.localLoading = false
+            console.log(e)
           })
       },
       onAddSentence () {
