@@ -40,6 +40,11 @@
                   <v-btn color="success" @click="onAddSentence">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
+              <v-layout>
+                <v-flex xs12>
+                  <sentence-card word="10"></sentence-card>
+                </v-flex>
+              </v-layout>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -55,6 +60,7 @@
 </template>
 
 <script>
+  import sentenceCard from './SentenceCard'
   export default {
     data () {
       return {
@@ -86,6 +92,9 @@
       onAddSentence () {
 
       }
+    },
+    components: {
+      sentenceCard
     }
   }
 </script>
@@ -101,5 +110,8 @@
 
   .gray-text {
     color: #BDBDBD;
+  }
+  .clearMargin {
+    margin: 0;
   }
 </style>
