@@ -68,6 +68,9 @@ export default {
     },
     isUser (state) {
       return state.user !== null
+    },
+    userId (state) {
+      return state.user.id
     }
   }
 }

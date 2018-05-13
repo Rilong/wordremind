@@ -37,19 +37,19 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs3 class="text-xs-right">
-                  <v-btn color="success" @click="onAddSentence">Add sentence</v-btn>
+                  <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
-              <v-layout>
+              <v-layout v-if="sentences">
                 <v-flex xs12>
-                  <sentence-card word="10"></sentence-card>
+                  <sentence-card v-for="(sentence, key) in sentences" :key="key" :index="key" :current="sentence"></sentence-card>
                 </v-flex>
               </v-layout>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="onClose" flat :disabled="localLoading">Close</v-btn>
-                <v-btn color="success" @click="onSave" flat :disabled="localLoading">Save</v-btn>
+                <v-btn color="error" @click="onClose" flat :disabled="localLoading || sentenceLoading">Close</v-btn>
+                <v-btn color="success" @click="onSave" flat :loading="loading" :disabled="loading || localLoading || sentenceLoading">Save</v-btn>
               </v-card-actions>
             </v-form>
           </v-flex>
@@ -71,19 +71,49 @@
         valid: false,
         localLoading: false,
         sentence: '',
-        editSentence: ''
+        editSentence: '',
+        sentenceLoading: false
+      }
+    },
+    computed: {
+      sentences () {
+        return this.$store.getters.tmpSentences
+      },
+      loading () {
+        return this.$store.getters.loading
+      },
+      words () {
+        return this.$store.getters.words
       }
     },
     methods: {
       onClose () {
         this.modal = false
+        this.wordname = ''
+        this.wordtranslated = ''
+        this.$store.dispatch('cleanTmpSentences')
       },
       onSave () {
-
+        if (this.wordname) {
+          let data = {
+            userId: this.$store.getters.userId,
+            word: {word: this.wordname, translated: this.wordtranslated},
+            sentences: this.sentences
+          }
+          this.$store.dispatch('saveWords', data)
+            .then(response => {
+              this.wordname = ''
+              this.wordtranslated = ''
+              this.modal = false
+            })
+            .catch(e => {
+              console.log(e)
+            })
+        }
       },
       onTranslate () {
         this.localLoading = true
-        this.$store.dispatch('translate', {to: 'uk', 'text': this.wordname})
+        this.$store.dispatch('translate', {to: 'uk', text: this.wordname})
           .then(response => {
             this.localLoading = false
             this.wordtranslated = response
@@ -93,7 +123,23 @@
           })
       },
       onAddSentence () {
+        this.sentenceLoading = true
+        this.$store.dispatch('translate', {to: 'uk', text: this.sentence})
+          .then(response => {
+            this.sentenceLoading = false
+            let sentenceObj = {
+              sentence: this.sentence,
+              translated: response
+            }
 
+            this.$store.dispatch('tmpSentencesAction', sentenceObj)
+            this.sentence = ''
+          })
+          .catch(e => {
+            this.sentence = ''
+            this.sentenceLoading = false
+            console.log(e)
+          })
       }
     },
     components: {
