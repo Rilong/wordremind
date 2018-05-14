@@ -29,12 +29,12 @@
                   <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
-              <sentence-card v-for="(sentence, index) in sentences" :sentence="sentence" :id="id" :index="index" :key="index"></sentence-card>
+              <sentence-card v-for="(sentence, index) in sentences" :sentence="sentence" :id="id" :key="index"></sentence-card>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="onClose" flat>Close</v-btn>
-                <v-btn color="success" @click="onSave" flat>Save</v-btn>
+                <v-btn color="error" @click="onClose" :disabled="sentenceLoading" flat>Close</v-btn>
+                <v-btn color="success" @click="onSave" :disabled="sentenceLoading" flat>Save</v-btn>
               </v-card-actions>
             </v-form>
           </v-flex>
@@ -67,7 +67,14 @@
 
       },
       onAddSentence () {
+        this.sentenceLoading = true
         this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence})
+          .then(response => {
+            this.sentenceLoading = false
+          })
+          .catch(e => {
+            this.sentenceLoading = false
+          })
       }
     },
     components: {

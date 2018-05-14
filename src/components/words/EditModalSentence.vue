@@ -9,8 +9,8 @@
         </v-flex>
       </v-layout>
       <v-spacer></v-spacer>
-      <v-btn small color="warning" @click="showEdit = !showEdit" class="clearMargin mr-2">Edit</v-btn>
-      <v-btn small color="error" class="clearMargin" @click="deleteSentence">Delete</v-btn>
+      <v-btn small color="warning" @click="showEdit = !showEdit" :disabled="localLoading" class="clearMargin mr-2">Edit</v-btn>
+      <v-btn small color="error" class="clearMargin" :disabled="localLoading" :loading="localLoading" @click="deleteSentence">Delete</v-btn>
     </v-card-title>
     <v-card-actions v-if="showEdit">
       <v-layout>
@@ -30,13 +30,14 @@
 
 <script>
   export default {
-    props: ['sentence', 'id', 'index'],
+    props: ['sentence', 'id'],
     data () {
       return {
         showEdit: false,
         showTranslation: false,
         sentenceT: '',
-        sentenceTTranslated: ''
+        sentenceTTranslated: '',
+        localLoading: false
       }
     },
     computed: {
@@ -46,7 +47,14 @@
     },
     methods: {
       deleteSentence () {
+        this.localLoading = true
         this.$store.dispatch('sentenceDelete', this.sentence)
+          .then(response => {
+            this.localLoading = false
+          })
+          .catch(e => {
+            this.localLoading = false
+          })
       },
       saveSentence () {
 
