@@ -5,10 +5,20 @@
           <v-layout>
             <v-flex>
               <v-container grid-list-lg>
-                <div class="text-xs-right mb-4">
+                <div class="text-xs-right mb-4" v-if="!loading">
                   <add-modal></add-modal>
                 </div>
-                <word-card></word-card>
+                <template v-if="!loading && words !== null">
+                  <word-card v-for="(word, id) in words" :key="id" :id="id" :word="word"></word-card>
+                </template>
+                <template v-else-if="loading">
+                  <div class="text-xs-center mt-5">
+                    <v-progress-circular :size="70" :width="7" indeterminate color="primary"></v-progress-circular>
+                  </div>
+                </template>
+                <template v-else>
+                  <h2 class="text-xs-center">No words</h2>
+                </template>
               </v-container>
             </v-flex>
           </v-layout>
@@ -34,6 +44,12 @@
     computed: {
       isUser () {
         return this.$store.getters.isUser
+      },
+      loading () {
+        return this.$store.getters.loading
+      },
+      words () {
+        return this.$store.getters.words
       }
     },
     components: {

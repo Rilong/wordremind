@@ -18,6 +18,18 @@
                       label="Word translated"
                       required
               ></v-text-field>
+              <v-layout>
+                <v-flex xs9>
+                  <v-text-field
+                          v-model="sentence"
+                          label="Sentence"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs3 class="text-xs-right">
+                  <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
+                </v-flex>
+              </v-layout>
+              <sentence-card v-for="(sentence, index) in sentences" :sentence="sentence" :id="id" :index="index" :key="index"></sentence-card>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -33,21 +45,33 @@
 </template>
 
 <script>
+  import sentenceCard from './EditModalSentence'
   export default {
+    props: ['sentences', 'id'],
     data () {
       return {
         word: 'word',
         modal: false,
         wordname: '',
         wordtranslated: '',
-        valid: false
+        valid: false,
+        sentenceLoading: false,
+        sentence: ''
       }
     },
     methods: {
       onClose () {
         this.modal = false
       },
-      onSave () {}
+      onSave () {
+
+      },
+      onAddSentence () {
+        this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence})
+      }
+    },
+    components: {
+      sentenceCard
     }
   }
 </script>

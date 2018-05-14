@@ -5,13 +5,13 @@
           <v-layout>
           <v-flex xs8>
             <v-card-text class="word pointer" @click="showTranslate = !showTranslate">
-              one <span v-if="showTranslate" class="gray-text" >- translated word</span>
+              {{word.word}} <span v-if="showTranslate" class="gray-text" >- {{word.word_translation}}</span>
             </v-card-text>
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
             <open-modal></open-modal>
-            <edit-modal></edit-modal>
-            <v-btn color="error btn-v-center" round>Delete</v-btn>
+            <edit-modal :sentences="word.sentences" :id="id"></edit-modal>
+            <v-btn color="error btn-v-center" round :loading="deleteLoading" :disabled="deleteLoading" @click="deleteWord">Delete</v-btn>
           </v-flex>
           </v-layout>
         </v-card>
@@ -23,13 +23,26 @@
   import openModal from './OpenModal'
   import editModal from './EditModal'
   export default {
+    props: ['word', 'id'],
     data () {
       return {
         name: 'test',
-        showTranslate: false
+        showTranslate: false,
+        deleteLoading: false
       }
     },
-    methods: {},
+    methods: {
+      deleteWord () {
+        this.deleteLoading = true
+        this.$store.dispatch('deleteWord', {data: this.word, id: this.id})
+          .then(() => {
+            this.deleteLoading = false
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      }
+    },
     components: {
       openModal,
       editModal

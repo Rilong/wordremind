@@ -69,6 +69,7 @@ export default {
   },
   created () {
     this.$store.dispatch('autoLogin')
+    this.$store.dispatch('getWords')
   }
 }
 </script>
