@@ -30,7 +30,19 @@
 
 <script>
   export default {
-    props: ['index', 'current'],
+    props: {
+      index: {
+        type: Number
+      },
+      current: {
+        type: Object
+      },
+      mode: {
+        type: String,
+        default: ''
+      }
+
+    },
     data () {
       return {
         showEdit: false,
@@ -41,11 +53,28 @@
     },
     methods: {
       saveSentence () {
-        this.$store.dispatch('updateTmpSentences', {sentence: this.sentence, translated: this.sentenceTranslated, index: this.index})
-        this.showEdit = false
+        if (this.mode !== 'editing') {
+          this.$store.dispatch('updateTmpSentences', {
+            sentence: this.sentence,
+            translated: this.sentenceTranslated,
+            index: this.index
+          })
+          this.showEdit = false
+        } else {
+          this.$store.dispatch('editAdded', {
+            sentence: this.sentence,
+            translated: this.sentenceTranslated,
+            index: this.index
+          })
+          this.showEdit = false
+        }
       },
       deleteSentence () {
-        this.$store.dispatch('deleteTmpSentences', {index: this.index})
+        if (this.mode === 'editing') {
+          this.$store.dispatch('deleteAdded', this.index)
+        } else {
+          this.$store.dispatch('deleteTmpSentences', {index: this.index})
+        }
       }
     },
     created () {

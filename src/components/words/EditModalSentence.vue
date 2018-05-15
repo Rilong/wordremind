@@ -1,5 +1,5 @@
 <template>
-  <v-card class="grey lighten-5 mb-3">
+  <v-card class="grey lighten-5 mb-3" v-if="!isDeleted">
     <v-card-title>
       <v-layout>
         <v-flex>
@@ -30,34 +30,58 @@
 
 <script>
   export default {
-    props: ['sentence', 'id'],
+    props: ['sentence', 'id', 'changes'],
     data () {
       return {
         showEdit: false,
         showTranslation: false,
         sentenceT: '',
         sentenceTTranslated: '',
-        localLoading: false
+        restoredSentence: '',
+        restoredTranslation: '',
+        localLoading: false,
+        isDeleted: false
       }
     },
     computed: {
       words () {
         return this.$store.getters.words
+      },
+      editing () {
+        return this.$store.getters.getEditingSentences
       }
     },
     methods: {
       deleteSentence () {
-        this.localLoading = true
-        this.$store.dispatch('sentenceDelete', this.sentence)
-          .then(response => {
-            this.localLoading = false
-          })
-          .catch(e => {
-            this.localLoading = false
-          })
+        let obj = this.sentence
+        obj['status'] = 'deleted'
+        this.$store.dispatch('addEditingSentence', obj)
+        this.isDeleted = true
       },
       saveSentence () {
-
+        let obj = {
+          sentence_id: this.sentence.sentence_id,
+          sentence_text: this.sentenceT,
+          sentence_translation: this.sentenceTTranslated,
+          status: 'edited'
+        }
+        this.$store.dispatch('addEditingSentence', obj)
+        this.showEdit = false
+      }
+    },
+    watch: {
+      changes () {
+        if (this.changes === 'cancel') {
+          if (this.isDeleted === true) {
+            setTimeout(() => {
+              this.isDeleted = false
+            }, 500)
+          }
+          setTimeout(() => {
+            this.sentenceT = this.sentence.sentence_text
+            this.sentenceTTranslated = this.sentence.sentence_translation
+          }, 500)
+        }
       }
     },
     created () {

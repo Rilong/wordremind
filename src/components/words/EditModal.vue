@@ -29,7 +29,10 @@
                   <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
-              <sentence-card v-for="(sentence, index) in sentences" :sentence="sentence" :id="id" :key="index"></sentence-card>
+              <sentence-card v-for="(sentence, index) in sentences" :changes="changes" :sentence="sentence" :id="id" :key="index"></sentence-card>
+              <template v-if="tmpSentences">
+                <sentence-tmp-card v-for="(sentence, key) in tmpSentences" :key="key + 'tmp'" :index="key" mode="editing" :current="sentence"></sentence-tmp-card>
+              </template>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -46,6 +49,7 @@
 
 <script>
   import sentenceCard from './EditModalSentence'
+  import sentenceTmpCard from './SentenceCard'
   export default {
     props: ['sentences', 'id'],
     data () {
@@ -56,15 +60,26 @@
         wordtranslated: '',
         valid: false,
         sentenceLoading: false,
-        sentence: ''
+        sentence: '',
+        changes: ''
+      }
+    },
+    computed: {
+      tmpSentences () {
+        try {
+          return this.$store.getters.getEditingSentences['added'] ? this.$store.getters.getEditingSentences['added'] : null
+        } catch (e) {}
+        return null
       }
     },
     methods: {
       onClose () {
         this.modal = false
+        this.changes = 'cancel'
+        this.$store.dispatch('clearEditingSentence')
       },
       onSave () {
-
+        this.changes = 'save'
       },
       onAddSentence () {
         this.sentenceLoading = true
@@ -78,7 +93,17 @@
       }
     },
     components: {
-      sentenceCard
+      sentenceCard,
+      sentenceTmpCard
+    },
+    watch: {
+      modal () {
+        if (this.modal === false) {
+          setTimeout(() => {
+            this.changes = ''
+          }, 500)
+        }
+      }
     }
   }
 </script>

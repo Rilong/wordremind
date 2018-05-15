@@ -29,6 +29,18 @@ export default {
     },
     setWords (state, payload) {
       state.words = payload
+    },
+    setEditing (state, payload) {
+      state.editingSentences = payload
+    },
+    updateAdded (state, payload) {
+      state.editingSentences['added'][payload.index] = {
+        sentence: payload.sentence,
+        translated: payload.translated
+      }
+    },
+    deleteAdded (state, payload) {
+      state.editingSentences['added'].splice(payload, 1)
     }
   },
   actions: {
@@ -65,13 +77,22 @@ export default {
         throw e
       }
     },
-    async sentenceDelete ({commit, getters}, payload) {
-      let words = await Vue.http.post('/api/deletesentence.php', {userId: getters.userId, data: payload})
-      commit('setWords', words.body)
-    },
-    async addSentence ({commit, getters}, payload) {
-      let words = await Vue.http.post('/api/addsentence.php', {userId: getters.userId, data: payload, to: 'uk'})
-      commit('setWords', words.body)
+    async addSentence ({commit, getters, dispatch}, payload) {
+      let translated = await dispatch('translate', {text: payload.sentence, to: 'uk'})
+      let obj = {
+        sentence: payload.sentence,
+        translated: translated,
+        status: 'added'
+      }
+      let editing = getters.getEditingSentences
+      if (editing === null) {
+        editing = {}
+      }
+      if (!editing['added']) {
+        editing['added'] = []
+      }
+      editing['added'].push(obj)
+      commit('setEditing', editing)
     },
     cleanTmpSentences ({commit}) {
       commit('setTmpSentences', null)
@@ -84,9 +105,29 @@ export default {
     },
     deleteTmpSentences ({commit}, payload) {
       commit('deleteTmpSentences', payload)
+    },
+    addEditingSentence ({commit, getters}, payload) {
+      let editing = getters.getEditingSentences
+      if (editing === null) {
+        editing = {}
+      }
+      editing[payload.sentence_id] = payload
+      commit('setEditing', editing)
+    },
+    deleteAdded ({commit}, payload) {
+      commit('deleteAdded', payload)
+    },
+    editAdded ({commit, getters}, payload) {
+      commit('updateAdded', payload)
+    },
+    clearEditingSentence ({commit}) {
+      commit('setEditing', null)
     }
   },
   getters: {
+    getEditingSentences (state) {
+      return state.editingSentences
+    },
     tmpSentences (state) {
       return state.tmpSentences
     },
