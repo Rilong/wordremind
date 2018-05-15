@@ -61,15 +61,8 @@
         valid: false,
         sentenceLoading: false,
         sentence: '',
-        changes: ''
-      }
-    },
-    computed: {
-      tmpSentences () {
-        try {
-          return this.$store.getters.getEditingSentences['added'] ? this.$store.getters.getEditingSentences['added'] : null
-        } catch (e) {}
-        return null
+        changes: '',
+        tmpSentences: ''
       }
     },
     methods: {
@@ -77,6 +70,7 @@
         this.modal = false
         this.changes = 'cancel'
         this.$store.dispatch('clearEditingSentence')
+        this.tmpSentences = ''
       },
       onSave () {
         this.changes = 'save'
@@ -86,6 +80,7 @@
         this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence})
           .then(response => {
             this.sentenceLoading = false
+            this.tmpSentences = this.$store.getters.getEditingSentences['added']
           })
           .catch(e => {
             this.sentenceLoading = false
