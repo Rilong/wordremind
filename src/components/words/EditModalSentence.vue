@@ -9,8 +9,8 @@
         </v-flex>
       </v-layout>
       <v-spacer></v-spacer>
-      <v-btn small color="warning" @click="showEdit = !showEdit" :disabled="localLoading" class="clearMargin mr-2">Edit</v-btn>
-      <v-btn small color="error" class="clearMargin" :disabled="localLoading" :loading="localLoading" @click="deleteSentence">Delete</v-btn>
+      <v-btn small color="warning" @click="showEdit = !showEdit" class="clearMargin mr-2">Edit</v-btn>
+      <v-btn small color="error" class="clearMargin" @click="deleteSentence">Delete</v-btn>
     </v-card-title>
     <v-card-actions v-if="showEdit">
       <v-layout>
@@ -37,9 +37,6 @@
         showTranslation: false,
         sentenceT: '',
         sentenceTTranslated: '',
-        restoredSentence: '',
-        restoredTranslation: '',
-        localLoading: false,
         isDeleted: false
       }
     },
