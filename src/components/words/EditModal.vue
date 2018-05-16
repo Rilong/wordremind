@@ -26,18 +26,18 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs3 class="text-xs-right">
-                  <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
+                  <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading || localLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
-              <sentence-card v-for="(sentence, index) in sentences" :changes="changes" :sentence="sentence" :id="id" :key="index"></sentence-card>
+              <sentence-card v-for="sentence in sentences" :changes="changes" :sentence="sentence" :id="id" :key="sentence.sentence_id"></sentence-card>
               <template v-if="tmpSentences">
                 <sentence-tmp-card v-for="(sentence, key) in tmpSentences" :key="key + 'tmp'" :index="key" mode="editing" :current="sentence"></sentence-tmp-card>
               </template>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="onClose" :disabled="sentenceLoading" flat>Close</v-btn>
-                <v-btn color="success" @click="onSave" :disabled="sentenceLoading" flat>Save</v-btn>
+                <v-btn color="error" @click="onClose" :disabled="sentenceLoading || localLoading" flat>Cancel</v-btn>
+                <v-btn color="success" @click="onSave" :disabled="sentenceLoading || localLoading" :loading="localLoading" flat>Save</v-btn>
               </v-card-actions>
             </v-form>
           </v-flex>
@@ -61,7 +61,8 @@
         sentenceLoading: false,
         sentence: '',
         changes: '',
-        tmpSentences: ''
+        tmpSentences: '',
+        localLoading: false
       }
     },
     computed: {
@@ -75,18 +76,31 @@
         this.changes = 'cancel'
         this.$store.dispatch('clearEditingSentence')
         this.tmpSentences = ''
+        this.sentence = ''
       },
-      onSave () {
-        this.changes = 'save'
-        if (this.wordname !== this.word.word || this.wordtranslated !== this.word.word_translation) {
-          this.$store.dispatch('addWordEditing', {
-            id: this.id,
-            word: this.wordname,
-            word_translation: this.wordtranslated
-          })
+      onSave: function () {
+        let obj = {
+          id: this.id,
+          word: this.wordname,
+          word_translation: this.wordtranslated
         }
+        if (this.wordname !== this.word.word || this.wordtranslated !== this.word.word_translation) {
+          obj['status'] = 'edited'
+        }
+        this.$store.dispatch('addWordEditing', obj)
+
         if (this.isEditingSentence) {
+          this.localLoading = true
           this.$store.dispatch('saveEditing')
+            .then(() => {
+              this.localLoading = false
+              this.$store.dispatch('clearEditingSentence')
+              this.$store.dispatch('cleanTmpSentences')
+              this.sentence = ''
+              this.tmpSentences = ''
+              this.changes = 'save'
+              this.modal = false
+            })
         }
       },
       onAddSentence () {
@@ -95,6 +109,7 @@
           .then(response => {
             this.sentenceLoading = false
             this.tmpSentences = this.$store.getters.getEditingSentences['added']
+            this.sentence = ''
           })
           .catch(e => {
             this.sentenceLoading = false

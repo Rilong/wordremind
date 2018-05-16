@@ -97,7 +97,8 @@ export default {
     async saveEditing ({commit, getters}) {
       let editing = getters.getEditingSentences
       let words = await Vue.http.post('/api/saveediting.php', {editing, user_id: getters.userId})
-      console.log(words.data)
+      commit('setWords', null)
+      commit('setWords', words.body)
     },
     cleanTmpSentences ({commit}) {
       commit('setTmpSentences', null)
