@@ -51,10 +51,9 @@
   import sentenceCard from './EditModalSentence'
   import sentenceTmpCard from './SentenceCard'
   export default {
-    props: ['sentences', 'id'],
+    props: ['sentences', 'id', 'word'],
     data () {
       return {
-        word: 'word',
         modal: false,
         wordname: '',
         wordtranslated: '',
@@ -63,6 +62,11 @@
         sentence: '',
         changes: '',
         tmpSentences: ''
+      }
+    },
+    computed: {
+      isEditingSentence () {
+        return this.$store.getters.isEditingSentences
       }
     },
     methods: {
@@ -74,6 +78,16 @@
       },
       onSave () {
         this.changes = 'save'
+        if (this.wordname !== this.word.word || this.wordtranslated !== this.word.word_translation) {
+          this.$store.dispatch('addWordEditing', {
+            id: this.id,
+            word: this.wordname,
+            word_translation: this.wordtranslated
+          })
+        }
+        if (this.isEditingSentence) {
+          this.$store.dispatch('saveEditing')
+        }
       },
       onAddSentence () {
         this.sentenceLoading = true
@@ -96,9 +110,15 @@
         if (this.modal === false) {
           setTimeout(() => {
             this.changes = ''
+            this.wordname = this.word.word
+            this.wordtranslated = this.word.word_translation
           }, 500)
         }
       }
+    },
+    created () {
+      this.wordname = this.word.word
+      this.wordtranslated = this.word.word_translation
     }
   }
 </script>

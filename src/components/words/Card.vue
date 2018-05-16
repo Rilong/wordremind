@@ -10,7 +10,7 @@
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
             <open-modal></open-modal>
-            <edit-modal :sentences="word.sentences" :id="id"></edit-modal>
+            <edit-modal :sentences="word.sentences" :word="word" :id="id"></edit-modal>
             <v-btn color="error btn-v-center" round :loading="deleteLoading" :disabled="deleteLoading" @click="deleteWord">Delete</v-btn>
           </v-flex>
           </v-layout>

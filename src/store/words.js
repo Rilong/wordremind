@@ -94,6 +94,11 @@ export default {
       editing['added'].push(obj)
       commit('setEditing', editing)
     },
+    async saveEditing ({commit, getters}) {
+      let editing = getters.getEditingSentences
+      let words = await Vue.http.post('/api/saveediting.php', {editing, user_id: getters.userId})
+      console.log(words.data)
+    },
     cleanTmpSentences ({commit}) {
       commit('setTmpSentences', null)
     },
@@ -105,6 +110,14 @@ export default {
     },
     deleteTmpSentences ({commit}, payload) {
       commit('deleteTmpSentences', payload)
+    },
+    addWordEditing ({commit, getters}, payload) {
+      let editing = getters.getEditingSentences
+      if (editing === null) {
+        editing = {}
+      }
+      editing['word'] = payload
+      commit('setEditing', editing)
     },
     addEditingSentence ({commit, getters}, payload) {
       let editing = getters.getEditingSentences
@@ -127,6 +140,9 @@ export default {
   getters: {
     getEditingSentences (state) {
       return state.editingSentences
+    },
+    isEditingSentences (state) {
+      return state.editingSentences !== null
     },
     tmpSentences (state) {
       return state.tmpSentences
