@@ -55,6 +55,7 @@ export default {
     logoutUser ({commit, dispatch}) {
       dispatch('cleanError')
       commit('setUser', null)
+      commit('setWords', null)
       Vue.cookie.delete('user')
     },
     autoLogin ({commit}) {

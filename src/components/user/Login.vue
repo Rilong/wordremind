@@ -70,7 +70,10 @@
             }
             this.$store.dispatch('loginUser', userData)
               .then(() => {
-                this.$router.push('/')
+                this.$store.dispatch('getWords')
+                  .then(() => {
+                    this.$router.push('/')
+                  })
               })
               .catch(() => {})
           }
