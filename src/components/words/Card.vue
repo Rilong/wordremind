@@ -9,8 +9,8 @@
             </v-card-text>
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
-            <open-modal></open-modal>
-            <edit-modal :sentences="word.sentences" :word="word" :id="id"></edit-modal>
+            <open-modal :word="word"></open-modal>
+            <edit-modal :sentences="word.sentences" :word="word" :id="word.word_id"></edit-modal>
             <v-btn color="error btn-v-center" round :loading="deleteLoading" :disabled="deleteLoading" @click="deleteWord">Delete</v-btn>
           </v-flex>
           </v-layout>
@@ -34,7 +34,7 @@
     methods: {
       deleteWord () {
         this.deleteLoading = true
-        this.$store.dispatch('deleteWord', {data: this.word, id: this.id})
+        this.$store.dispatch('deleteWord', {data: this.word, id: this.word.word_id})
           .then(() => {
             this.deleteLoading = false
           })

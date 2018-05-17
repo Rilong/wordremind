@@ -34,7 +34,6 @@
   import appLogin from './user/Login'
   import wordCard from './words/Card'
   import addModal from './words/AddModal'
-
   export default {
     data () {
       return {

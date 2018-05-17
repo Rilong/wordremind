@@ -5,10 +5,11 @@
       <v-container>
         <v-layout>
           <v-flex>
-            <h2 class="display-2">{{word}} - <span class="gray-text">text translated</span></h2>
+            <h2 class="display-2">{{word.word}} - <span class="gray-text">{{word.word_translation}}</span></h2>
             <v-divider></v-divider>
-            <p class="subheading mt-3">Lorem ipsum dolor sit - <span class="gray-text">text translated</span></p>
-            <p class="subheading mt-3">Lorem ipsum dolor sit - <span class="gray-text">text translated</span></p>
+            <div class="pt-3">
+              <open-modal-sentence v-for="sentence in word.sentences" :sentence="sentence" :key="sentence.sentence_id"></open-modal-sentence>
+            </div>
             <v-divider></v-divider>
           </v-flex>
         </v-layout>
@@ -26,10 +27,11 @@
 </template>
 
 <script>
+  import openModalSentence from './OpenModalSentence'
   export default {
+    props: ['word'],
     data () {
       return {
-        word: 'word',
         modal: false
       }
     },
@@ -37,6 +39,9 @@
       onClose () {
         this.modal = false
       }
+    },
+    components: {
+      openModalSentence
     }
   }
 </script>
