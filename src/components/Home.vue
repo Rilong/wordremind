@@ -5,8 +5,16 @@
           <v-layout>
             <v-flex>
               <v-container grid-list-lg>
-                <div class="text-xs-right mb-4" v-if="!loading">
-                  <add-modal></add-modal>
+                <div class="mb-4 mt-2" v-if="!loading">
+                  <v-layout>
+                      <v-btn round color="primary" @click="sort">
+                        Sort
+                        <v-icon v-if="!sortState">arrow_downward</v-icon>
+                        <v-icon v-else>arrow_upward</v-icon>
+                      </v-btn>
+                      <v-spacer></v-spacer>
+                      <add-modal></add-modal>
+                  </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
                   <word-card v-for="(word, id) in words" :key="id" :id="id" :word="word"></word-card>
@@ -37,7 +45,8 @@
   export default {
     data () {
       return {
-        name: 'home'
+        name: 'home',
+        sortState: false
       }
     },
     computed: {
@@ -49,6 +58,12 @@
       },
       words () {
         return this.$store.getters.words
+      }
+    },
+    methods: {
+      sort () {
+        this.$store.dispatch('reverseWords')
+        this.sortState = !this.sortState
       }
     },
     components: {

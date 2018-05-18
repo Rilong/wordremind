@@ -100,6 +100,18 @@ export default {
       commit('setWords', null)
       commit('setWords', words.body)
     },
+    reverseWords ({commit, getters}) {
+      let words = getters.words
+      let newObj = {}
+      let keys = []
+      for (let key in words) {
+        keys.push(key)
+      }
+      for (let i = keys.length - 1; i >= 0; i--) {
+        newObj[keys[i]] = words[keys[i]]
+      }
+      commit('setWords', newObj)
+    },
     cleanTmpSentences ({commit}) {
       commit('setTmpSentences', null)
     },
