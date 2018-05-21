@@ -1,4 +1,4 @@
-<template>
+7<template>
   <v-layout>
       <template v-if="isUser">
         <template>
@@ -7,17 +7,21 @@
               <v-container grid-list-lg>
                 <div class="mb-4 mt-2" v-if="!loading">
                   <v-layout>
-                      <v-btn round color="primary" @click="sort">
+                      <v-btn class="sort-btn" round color="primary" @click="sort">
                         Sort
-                        <v-icon v-if="!sortState">arrow_downward</v-icon>
-                        <v-icon v-else>arrow_upward</v-icon>
+                        <transition name="sort" mode="out-in">
+                          <v-icon v-if="!sortState" key="arrow-up">arrow_downward</v-icon>
+                          <v-icon v-else key="arrow-down">arrow_upward</v-icon>
+                        </transition>
                       </v-btn>
                       <v-spacer></v-spacer>
                       <add-modal></add-modal>
                   </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
-                  <word-card v-for="(word, id) in words" :key="id" :id="id" :word="word"></word-card>
+                  <transition-group name="cart">
+                    <word-card v-for="(word, id) in words" :key="id" :id="id" :word="word"></word-card>
+                  </transition-group>
                 </template>
                 <template v-else-if="loading">
                   <div class="text-xs-center mt-5">
@@ -76,4 +80,42 @@
 
 <style scoped>
 
+  .sort-btn {
+    overflow: hidden;
+  }
+
+  .cart-leave {
+    opacity: 1;
+  }
+
+  .cart-leave-active {
+    transition: opacity .4s linear;
+  }
+
+  .cart-leave-to {
+    opacity: 0;
+  }
+
+  .sort-enter {
+    transform: translate(0, -20px);
+  }
+
+  .sort-enter-active {
+    transition: transform .2s ease;
+  }
+
+  .sort-enter-to {
+    transform: translate(0, 0);
+  }
+  .sort-leave {
+    transform: translate(0, 0);
+  }
+
+  .sort-leave-active {
+    transition: transform .2s ease;
+  }
+
+  .sort-leave-to {
+    transform: translate(50px, 0);
+  }
 </style>
