@@ -4,8 +4,11 @@
         <v-card color="white mb-2 pt-2 pb-2">
           <v-layout>
           <v-flex xs8>
-            <v-card-text class="word pointer" @click="showTranslate = !showTranslate">
-              {{word.word}} <span v-if="showTranslate" class="gray-text" >- {{word.word_translation}}</span>
+            <v-card-text class="word pointer my-d-flex" @click="showTranslate = !showTranslate">
+              <span class="mr-6px">{{word.word}}</span>
+              <transition name="translated">
+                <span v-if="showTranslate && word.word_translation" class="gray-text">- {{word.word_translation}}</span>
+              </transition>
             </v-card-text>
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
@@ -51,6 +54,9 @@
 </script>
 
 <style scoped>
+  .my-d-flex {
+    display: flex;
+  }
   .word {
     font-size: 18px;
   }
@@ -69,9 +75,54 @@
   .gray-text {
     color: #BDBDBD;
     font-size: 16px;
+    display: inline-block;
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
+
+  .mr-6px {
+    margin-right: 6px;
   }
 
   .pointer {
     cursor: pointer;
+  }
+
+  /* ====== Animations ====== */
+  /* Animate translation text */
+  .translated-enter {
+    opacity: 0;
+  }
+
+  .translated-enter-active {
+    transition: opacity .4s linear;
+  }
+
+  .translated-enter-to {
+    opacity: 1;
+  }
+
+  .translated-leave {
+    opacity: 1;
+  }
+
+  .translated-leave-active {
+    transition: opacity .4s ease;
+  }
+
+  .translated-leave-to {
+    opacity: 0;
+  }
+
+  @keyframes showTranslate {
+    from {
+      opacity: 0;
+      width: 0;
+    }
+    to {
+      opacity: 1;
+      width: 100px;
+    }
+
   }
 </style>
