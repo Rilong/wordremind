@@ -49,6 +49,7 @@ export default {
         commit('setLoading', false)
         commit('setWords', null)
         console.log(e)
+        commit('setError', 'Error server: ' + e.statusText)
       }
     },
     async deleteWord ({commit}, payload) {
