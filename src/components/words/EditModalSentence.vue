@@ -45,7 +45,7 @@
         return this.$store.getters.words
       },
       editing () {
-        return this.$store.getters.getEditingSentences
+        return this.$store.getters.getEditing
       }
     },
     methods: {

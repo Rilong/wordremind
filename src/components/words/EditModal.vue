@@ -67,7 +67,7 @@
     },
     computed: {
       isEditingSentence () {
-        return this.$store.getters.isEditingSentences
+        return this.$store.getters.isEditing
       }
     },
     methods: {
@@ -108,7 +108,7 @@
         this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence})
           .then(response => {
             this.sentenceLoading = false
-            this.tmpSentences = this.$store.getters.getEditingSentences['added']
+            this.tmpSentences = this.$store.getters.getEditing['added']
             this.sentence = ''
           })
           .catch(e => {

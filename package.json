@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "google-translate-api": "^2.3.0",
+    "lodash": "^4.17.10",
     "reverse-object-order": "^0.1.3",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",

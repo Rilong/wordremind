@@ -1,46 +1,28 @@
 /* eslint-disable no-unused-vars */
 import Vue from 'vue'
+import _ from 'lodash'
 
 export default {
   state: {
     words: null,
-    tmpSentences: null,
-    editingSentences: null
+    editing: null
   },
   mutations: {
-    setTmpSentences (state, payload) {
-      if (payload === null) {
-        state.tmpSentences = null
-      } else {
-        if (state.tmpSentences === null) {
-          state.tmpSentences = []
-        }
-        state.tmpSentences.push(payload)
-      }
-    },
-    updateTmpSentences (state, payload) {
-      state.tmpSentences[payload.index] = {
-        sentence: payload.sentence,
-        translated: payload.translated
-      }
-    },
-    deleteTmpSentences (state, payload) {
-      state.tmpSentences.splice(payload.index, 1)
-    },
+
     setWords (state, payload) {
       state.words = payload
     },
     setEditing (state, payload) {
-      state.editingSentences = payload
+      state.editing = payload
     },
     updateAdded (state, payload) {
-      state.editingSentences['added'][payload.index] = {
+      state.editing['added'][payload.index] = {
         sentence: payload.sentence,
         translated: payload.translated
       }
     },
     deleteAdded (state, payload) {
-      state.editingSentences['added'].splice(payload, 1)
+      state.editing['added'].splice(payload, 1)
     }
   },
   actions: {
@@ -77,55 +59,18 @@ export default {
         throw e
       }
     },
-    async addSentence ({commit, getters, dispatch}, payload) {
-      let translated = await dispatch('translate', {text: payload.sentence, to: 'uk'})
-      let obj = {
-        sentence: payload.sentence,
-        translated: translated,
-        status: 'added'
-      }
-      let editing = getters.getEditingSentences
-      if (editing === null) {
-        editing = {}
-      }
-      if (!editing['added']) {
-        editing['added'] = []
-      }
-      editing['added'].push(obj)
-      commit('setEditing', editing)
-    },
     async saveEditing ({commit, getters}) {
-      let editing = getters.getEditingSentences
+      let editing = getters.getEditing
       let words = await Vue.http.post('/api/saveediting.php', {editing, user_id: getters.userId})
       commit('setWords', null)
       commit('setWords', words.body)
     },
     reverseWords ({commit, getters}) {
       let words = getters.words
-      let newObj = {}
-      let keys = []
-      for (let key in words) {
-        keys.push(key)
-      }
-      for (let i = keys.length - 1; i >= 0; i--) {
-        newObj[keys[i]] = words[keys[i]]
-      }
-      commit('setWords', newObj)
-    },
-    cleanTmpSentences ({commit}) {
-      commit('setTmpSentences', null)
-    },
-    tmpSentencesAction ({commit}, payload) {
-      commit('setTmpSentences', payload)
-    },
-    updateTmpSentences ({commit}, payload) {
-      commit('updateTmpSentences', payload)
-    },
-    deleteTmpSentences ({commit}, payload) {
-      commit('deleteTmpSentences', payload)
+      commit('setWords', _.reverse(words))
     },
     addWordEditing ({commit, getters}, payload) {
-      let editing = getters.getEditingSentences
+      let editing = getters.getEditing
       if (editing === null) {
         editing = {}
       }
@@ -133,7 +78,7 @@ export default {
       commit('setEditing', editing)
     },
     addEditingSentence ({commit, getters}, payload) {
-      let editing = getters.getEditingSentences
+      let editing = getters.getEditing
       if (editing === null) {
         editing = {}
       }
@@ -151,14 +96,11 @@ export default {
     }
   },
   getters: {
-    getEditingSentences (state) {
-      return state.editingSentences
+    getEditing (state) {
+      return state.editing
     },
-    isEditingSentences (state) {
-      return state.editingSentences !== null
-    },
-    tmpSentences (state) {
-      return state.tmpSentences
+    isEditing (state) {
+      return state.editing !== null
     },
     words (state) {
       return state.words
