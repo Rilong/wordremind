@@ -1,4 +1,4 @@
-7<template>
+<template>
   <v-layout>
       <template v-if="isUser">
         <template>
@@ -20,7 +20,7 @@
                 </div>
                 <template v-if="!loading && words !== null">
                   <transition-group name="cart">
-                    <word-card v-for="(word, id) in words" :key="id" :id="id" :word="word"></word-card>
+                    <word-card v-for="(word) in words" :key="'wordid' + word.word_id" :word="word"></word-card>
                   </transition-group>
                 </template>
                 <template v-else-if="loading">

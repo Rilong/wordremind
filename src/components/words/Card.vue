@@ -23,7 +23,7 @@
   import openModal from './OpenModal'
   import editModal from './EditModal'
   export default {
-    props: ['word', 'id'],
+    props: ['word'],
     data () {
       return {
         name: 'test',
