@@ -92,37 +92,29 @@
   /* Animate translation text */
   .translated-enter {
     opacity: 0;
+    transform: translateX(-5px);
   }
 
   .translated-enter-active {
-    transition: opacity .4s linear;
+    transition: opacity .4s linear, transform .8s ease;
   }
 
   .translated-enter-to {
     opacity: 1;
+    transform: translateX(0);
   }
 
   .translated-leave {
     opacity: 1;
+    transform: translateX(0);
   }
 
   .translated-leave-active {
-    transition: opacity .4s ease;
+    transition: opacity .4s ease, transform .8s ease;
   }
 
   .translated-leave-to {
     opacity: 0;
-  }
-
-  @keyframes showTranslate {
-    from {
-      opacity: 0;
-      width: 0;
-    }
-    to {
-      opacity: 1;
-      width: 100px;
-    }
-
+    transform: translateX(-5px);
   }
 </style>
