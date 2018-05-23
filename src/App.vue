@@ -50,7 +50,9 @@ export default {
     },
     links () {
       if (this.isUser) {
-        return []
+        return [
+          {to: '/train', title: 'Train', icon: 'school'}
+        ]
       } else {
         return [
           {to: '/registration', title: 'Registration', icon: 'how_to_reg'}
