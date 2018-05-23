@@ -15,6 +15,7 @@
                         </transition>
                       </v-btn>
                       <v-spacer></v-spacer>
+                      <export-modal></export-modal>
                       <add-modal></add-modal>
                   </v-layout>
                 </div>
@@ -46,6 +47,8 @@
   import appLogin from './user/Login'
   import wordCard from './words/Card'
   import addModal from './words/AddModal'
+  import exportModal from './words/ExportModal'
+
   export default {
     data () {
       return {
@@ -73,7 +76,8 @@
     components: {
       appLogin,
       wordCard,
-      addModal
+      addModal,
+      exportModal
     }
   }
 </script>
