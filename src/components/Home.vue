@@ -20,9 +20,10 @@
                   </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
-                  <transition-group name="cart">
-                    <word-card v-for="(word) in words" :key="'wordid' + word.word_id" :word="word"></word-card>
-                  </transition-group>
+                  <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word"></word-card>
+                  <div class="text-xs-center">
+                    <v-pagination :length="pagination.length" :total-visible="7" v-model="page" circle></v-pagination>
+                  </div>
                 </template>
                 <template v-else-if="loading">
                   <div class="text-xs-center mt-5">
@@ -53,7 +54,8 @@
     data () {
       return {
         name: 'home',
-        sortState: false
+        sortState: false,
+        page: 1
       }
     },
     computed: {
@@ -65,6 +67,12 @@
       },
       words () {
         return this.$store.getters.words
+      },
+      pagination () {
+        return this.$store.getters.pagination
+      },
+      activePage () {
+        return this.$store.getters.activePage
       }
     },
     methods: {
@@ -73,6 +81,15 @@
         this.sortState = !this.sortState
       }
     },
+    watch: {
+      page () {
+        this.$store.commit('setActivePage', this.page)
+      },
+      words () {
+        this.$store.commit('setPagination', this.words)
+      }
+    },
+    created () {},
     components: {
       appLogin,
       wordCard,
@@ -86,18 +103,6 @@
 
   .sort-btn {
     overflow: hidden;
-  }
-
-  .cart-leave {
-    opacity: 1;
-  }
-
-  .cart-leave-active {
-    transition: opacity .4s linear;
-  }
-
-  .cart-leave-to {
-    opacity: 0;
   }
 
   .sort-enter {

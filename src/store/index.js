@@ -4,6 +4,7 @@ import user from './user'
 import shared from './shared'
 import words from './words'
 import sentences from './sentences'
+import pagination from './pagination'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
     user,
     shared,
     words,
-    sentences
+    sentences,
+    pagination
   }
 })
