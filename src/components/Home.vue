@@ -7,6 +7,7 @@
               <v-container grid-list-lg>
                 <div class="mb-4 mt-2" v-if="!loading">
                   <v-layout>
+                    <v-flex xs1>
                       <v-btn class="sort-btn" round color="primary" @click="sort">
                         Sort
                         <transition name="sort" mode="out-in">
@@ -14,9 +15,13 @@
                           <v-icon v-else key="arrow-down">arrow_upward</v-icon>
                         </transition>
                       </v-btn>
-                      <v-spacer></v-spacer>
-                      <export-modal></export-modal>
-                      <add-modal></add-modal>
+                    </v-flex>
+                    <v-flex xs1>
+                      <v-switch v-model="onlyNew" label="Only new" color="primary" class="only-switch"></v-switch>
+                    </v-flex>
+                    <v-spacer></v-spacer>
+                    <export-modal></export-modal>
+                    <add-modal></add-modal>
                   </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
@@ -55,6 +60,7 @@
       return {
         name: 'home',
         sortState: false,
+        onlyNew: false,
         page: 1
       }
     },
@@ -100,6 +106,12 @@
 </script>
 
 <style scoped>
+
+  .only-switch {
+    position: relative;
+    top: 8px;
+    left: -30px;
+  }
 
   .sort-btn {
     overflow: hidden;
