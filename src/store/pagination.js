@@ -15,6 +15,9 @@ export default {
   },
   actions: {},
   getters: {
+    perPage (state) {
+      return state.perPage
+    },
     pagination (state) {
       return state.paginationData
     },

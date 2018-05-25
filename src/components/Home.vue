@@ -26,7 +26,7 @@
                 </div>
                 <template v-if="!loading && words !== null">
                   <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word"></word-card>
-                  <div class="text-xs-center" v-if="pagination.length > 8">
+                  <div class="text-xs-center" v-if="pagination.length > perPage">
                     <v-pagination :length="pagination.length" :total-visible="7" v-model="page" circle></v-pagination>
                   </div>
                 </template>
@@ -60,7 +60,7 @@
       return {
         name: 'home',
         sortState: false,
-        onlyNew: false,
+        onlyNew: this.$store.getters.onlyNew,
         page: 1
       }
     },
@@ -79,6 +79,9 @@
       },
       activePage () {
         return this.$store.getters.activePage
+      },
+      perPage () {
+        return this.$store.getters.perPage
       }
     },
     methods: {
