@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="800" v-model="modal">
+  <v-dialog width="800" v-model="modal" lazy>
     <v-btn slot="activator" color="success btn-v-center" round>Open</v-btn>
     <v-card>
       <v-container>
