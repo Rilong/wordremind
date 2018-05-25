@@ -5,19 +5,19 @@
           <v-layout>
             <v-flex>
               <v-container grid-list-lg>
-                <div class="mb-4 mt-2" v-if="!loading">
+                <div class="mb-4 mt-2" v-if="words">
                   <v-layout>
                     <v-flex xs1>
-                      <v-btn class="sort-btn" round color="primary" @click="sort">
+                      <v-btn class="sort-btn" round color="primary" :disabled="loading" @click="sort">
                         Sort
-                        <transition name="sort" mode="out-in">
+                        <transition name="sort" mode="out-in" :disabled="loading">
                           <v-icon v-if="!sortState" key="arrow-up">arrow_downward</v-icon>
                           <v-icon v-else key="arrow-down">arrow_upward</v-icon>
                         </transition>
                       </v-btn>
                     </v-flex>
                     <v-flex xs1>
-                      <v-switch v-model="onlyNew" label="Only new" color="primary" class="only-switch"></v-switch>
+                      <v-switch v-model="onlyNew" label="Only new" color="primary" :disabled="loading" class="only-switch"></v-switch>
                     </v-flex>
                     <v-spacer></v-spacer>
                     <export-modal></export-modal>
@@ -26,7 +26,7 @@
                 </div>
                 <template v-if="!loading && words !== null">
                   <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word"></word-card>
-                  <div class="text-xs-center">
+                  <div class="text-xs-center" v-if="pagination.length > 8">
                     <v-pagination :length="pagination.length" :total-visible="7" v-model="page" circle></v-pagination>
                   </div>
                 </template>
@@ -93,6 +93,10 @@
       },
       words () {
         this.$store.commit('setPagination', this.words)
+      },
+      onlyNew () {
+        this.$store.commit('setOnlyNew', this.onlyNew)
+        this.$store.dispatch('getWords')
       }
     },
     created () {},

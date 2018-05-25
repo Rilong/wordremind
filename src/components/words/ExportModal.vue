@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="800" v-model="modal">
-    <v-btn slot="activator" round color="blue" class="white--text darken-1">Export</v-btn>
+    <v-btn slot="activator" :disabled="loading" round color="blue" class="white--text darken-1">Export</v-btn>
     <v-card>
       <v-container>
         <v-layout>
@@ -43,6 +43,9 @@
     computed: {
       words () {
         return this.$store.getters.words
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     },
     methods: {

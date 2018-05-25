@@ -1,6 +1,6 @@
 <template>
   <v-dialog width="800" v-model="modal">
-    <v-btn slot="activator" round color="success">Add word</v-btn>
+    <v-btn slot="activator" :disabled="loading" round color="success">Add word</v-btn>
     <v-card>
       <v-container>
         <v-layout>
