@@ -6,6 +6,7 @@ import words from './words'
 import sentences from './sentences'
 import pagination from './pagination'
 import settings from './settings'
+import train from './train'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     words,
     sentences,
     pagination,
-    settings
+    settings,
+    train
   }
 })
