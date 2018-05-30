@@ -10,20 +10,32 @@
           <v-card-title>
             <h2 class="text-xs-center" style="width: 100%">{{mainWord.word}}</h2>
           </v-card-title>
-          <v-divider></v-divider>
+          <template>
+            <v-progress-linear v-model="percent"></v-progress-linear>
+          </template>
           <v-card-text>
             <div v-for="activeWord in activeWords">
-              <v-btn class="train-btn" round @click="onActive(activeWord.word_id)" :class="{primary: activeWord.active}">{{activeWord.word_translation}}</v-btn>
+              <v-btn class="train-btn" round @click="onActive(activeWord.word_id)" :class="{primary: activeWord.active, success: activeWord.highlighted}">{{activeWord.word_translation}}</v-btn>
             </div>
           </v-card-text>
           <v-card-actions class="pb-4">
             <span>{{wordCount}} of {{words.length}}</span>
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="onRemember">I don't remember</v-btn>
-            <v-btn color="success" @click="onOk">OK</v-btn>
+            <v-btn color="error" :disabled="!controls" @click="onRemember">I don't remember</v-btn>
+            <v-btn color="success" :disabled="!controls" @click="onOk">OK</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
+      <template v-if="message">
+        <v-snackbar
+          :timeout="messageTimeout"
+          :bottom="true"
+          :value="true"
+          :multi-line="true"
+          :color="message.status"
+          class="text-xs-center"
+        ><h3 class="text-xs-center" style="width: 100%; font-weight: normal">{{message.text}}</h3></v-snackbar>
+      </template>
     </v-layout>
   </v-container>
 </template>
@@ -32,7 +44,7 @@
   export default {
     data () {
       return {
-        wordCount: 1,
+        wordCount: 0,
         isStart: false
       }
     },
@@ -45,6 +57,18 @@
       },
       activeWords () {
         return this.$store.getters.trainWordsActive
+      },
+      percent () {
+        return this.wordCount / this.words.length * 100
+      },
+      message () {
+        return this.$store.getters.trainMessage
+      },
+      messageTimeout () {
+        return this.$store.getters.trainMessageTimeout
+      },
+      controls () {
+        return this.$store.getters.trainControls
       }
     },
     methods: {
@@ -54,13 +78,18 @@
       },
       restart () {
         this.$store.dispatch('trainRestart')
-        this.wordCount = 1
+        this.wordCount = 0
       },
       onActive (id) {
         this.$store.commit('setTrainSelectedWord', id)
       },
       onRemember () {
-
+        this.$store.dispatch('trainHighlight')
+        this.$store.commit('setTrainControls', false)
+        setTimeout(() => {
+          this.$store.commit('setTrainControls', true)
+          this.$store.dispatch('trainStart')
+        }, this.messageTimeout + 300)
       },
       onOk () {
         this.$store.dispatch('trainWordCheck')
