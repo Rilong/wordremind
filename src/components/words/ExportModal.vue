@@ -50,6 +50,7 @@
     },
     methods: {
       copy () {
+        window.getSelection().removeAllRanges()
         let el = document.getElementById('exportData')
         let range = document.createRange()
         range.selectNode(el)
