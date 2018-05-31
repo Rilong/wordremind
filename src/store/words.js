@@ -45,7 +45,6 @@ export default {
         let words = await Vue.http.get('/api/getwords.php', {params: {userId: getters.userId, settings: getters.settings}})
         commit('setLoading', false)
         commit('setWords', words.body)
-        console.log(words.body)
       } catch (e) {
         commit('setLoading', false)
         commit('setWords', null)

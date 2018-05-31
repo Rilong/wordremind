@@ -102,7 +102,9 @@
         this.$store.dispatch('getWords')
       }
     },
-    created () {},
+    created () {
+      this.$store.commit('setPagination', this.words)
+    },
     components: {
       appLogin,
       wordCard,
