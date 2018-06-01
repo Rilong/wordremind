@@ -1,8 +1,13 @@
 <template>
   <v-container grid-list-xl>
     <v-layout>
-      <v-btn color="success" large v-if="!isStart" @click="start">Start</v-btn>
-      <v-btn color="warning" large v-else @click="restart">Restart</v-btn>
+      <v-flex xs1>
+        <v-btn color="success" large v-if="!isStart" @click="start">Start</v-btn>
+        <v-btn color="warning" large v-else @click="restart">Restart</v-btn>
+      </v-flex>
+      <v-flex xs1 v-if="isStart">
+        <v-switch v-model="onlyNew" label="Only new" color="primary" :disabled="loading" class="only-switch"></v-switch>
+      </v-flex>
     </v-layout>
     <v-layout v-if="isStart">
       <v-flex xs6 offset-xs3 column>
@@ -45,7 +50,8 @@
     data () {
       return {
         wordCount: 0,
-        isStart: false
+        isStart: false,
+        onlyNew: false
       }
     },
     computed: {
@@ -107,5 +113,10 @@
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .only-switch {
+    position: relative;
+    top: 12px;
   }
 </style>
