@@ -8,19 +8,36 @@
       <v-flex xs1 v-if="isStart">
         <v-switch v-model="onlyNew" label="Only new" color="primary" :disabled="loading" class="only-switch"></v-switch>
       </v-flex>
+      <v-flex xs2 v-if="isStart">
+        <v-switch v-model="reverseMode" label="Reverse mode" color="primary" :disabled="loading" class="only-switch"></v-switch>
+      </v-flex>
     </v-layout>
     <v-layout v-if="isStart">
       <v-flex xs6 offset-xs3 column>
         <v-card>
           <v-card-title>
-            <h2 class="text-xs-center" style="width: 100%">{{mainWord.word}}</h2>
+            <h2 class="text-xs-center" style="width: 100%">
+              <span v-if="!reverse">{{mainWord.word}}</span>
+              <span v-else>{{mainWord.word_translation}}</span>
+            </h2>
           </v-card-title>
           <template>
             <v-progress-linear v-model="percent"></v-progress-linear>
           </template>
           <v-card-text>
             <div v-for="activeWord in activeWords">
-              <v-btn class="train-btn" round @click="onActive(activeWord.word_id)" :class="{primary: activeWord.active, success: activeWord.highlighted}">{{activeWord.word_translation}}</v-btn>
+              <v-btn
+                  v-if="!reverse"
+                  class="train-btn"
+                  round @click="onActive(activeWord.word_id)"
+                  :class="{primary: activeWord.active, success: activeWord.highlighted}"
+              >{{activeWord.word_translation}}</v-btn>
+              <v-btn
+                  v-else
+                  class="train-btn"
+                  round @click="onActive(activeWord.word_id)"
+                  :class="{primary: activeWord.active, success: activeWord.highlighted}"
+              >{{activeWord.word}}</v-btn>
             </div>
           </v-card-text>
           <v-card-actions class="pb-4">
@@ -51,7 +68,8 @@
       return {
         wordCount: 0,
         isStart: false,
-        onlyNew: false
+        onlyNew: false,
+        reverseMode: false
       }
     },
     computed: {
@@ -60,6 +78,9 @@
       },
       mainWord () {
         return this.$store.getters.mainTrainWord
+      },
+      reverse () {
+        return this.$store.getters.trainReverseMode
       },
       activeWords () {
         return this.$store.getters.trainWordsActive
@@ -104,6 +125,14 @@
           })
           .catch(() => {})
       }
+    },
+    watch: {
+      reverseMode () {
+        this.$store.commit('setTrainReverseMode', this.reverseMode)
+      }
+    },
+    beforeDestroy () {
+      this.$store.commit('setTrainReverseMode', false)
     }
   }
 </script>

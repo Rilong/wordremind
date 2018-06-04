@@ -9,7 +9,7 @@ export default {
     trainWordsActive: null,
     trainMessage: null,
     trainMessageTimeout: 2000,
-    isReverse: false,
+    reverseMode: false,
     trainControls: true
   },
   mutations: {
@@ -48,6 +48,9 @@ export default {
     },
     setTrainControls (state, payload) {
       state.trainControls = payload
+    },
+    setTrainReverseMode (state, payload) {
+      state.reverseMode = payload
     }
   },
   actions: {
@@ -151,6 +154,9 @@ export default {
     },
     trainControls (state) {
       return state.trainControls
+    },
+    trainReverseMode (state) {
+      return state.reverseMode
     },
     selected (state) {
       return _.find(state.trainWordsActive, {active: true})
