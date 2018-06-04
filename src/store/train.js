@@ -4,12 +4,14 @@ export default {
   state: {
     mainTrainWord: null,
     trainWords: null,
+    trainWordsLength: 0,
     trainWordsGood: null,
     trainWordsMistakes: 0,
     trainWordsActive: null,
     trainMessage: null,
     trainMessageTimeout: 2000,
     reverseMode: false,
+    trainOnlyNew: false,
     trainControls: true
   },
   mutations: {
@@ -51,6 +53,12 @@ export default {
     },
     setTrainReverseMode (state, payload) {
       state.reverseMode = payload
+    },
+    setTrainOnlyNew (state, payload) {
+      state.trainOnlyNew = payload
+    },
+    setTrainWordsLength (state, payload) {
+      state.trainWordsLength = payload
     }
   },
   actions: {
@@ -92,7 +100,7 @@ export default {
     },
     trainRestart ({commit, getters, dispatch}) {
       commit('setTrainWords', null)
-      dispatch('trainStart')
+      dispatch('trainOnlyNew')
     },
     trainWordCheck ({commit, getters, dispatch}) {
       let selected = getters.selected
@@ -128,6 +136,17 @@ export default {
       setTimeout(() => {
         commit('setTrainHighlight', 0)
       }, getters.trainMessageTimeout)
+    },
+    trainOnlyNew ({commit, getters, dispatch}) {
+      let onlyNew = getters.trainOnlyNew
+      let words = _.clone(getters.words)
+      if (onlyNew) {
+        commit('setTrainWords', _.dropRight(_.orderBy(words, ['created_date'], ['desc']), words.length - getters.perPage))
+      } else {
+        commit('setTrainWords', words)
+      }
+      commit('setTrainWordsLength', getters.trainWords.length)
+      dispatch('trainStart')
     }
   },
   getters: {
@@ -157,6 +176,12 @@ export default {
     },
     trainReverseMode (state) {
       return state.reverseMode
+    },
+    trainOnlyNew (state) {
+      return state.trainOnlyNew
+    },
+    trainWordsLength (state) {
+      return state.trainWordsLength
     },
     selected (state) {
       return _.find(state.trainWordsActive, {active: true})

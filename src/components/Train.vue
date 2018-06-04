@@ -6,10 +6,10 @@
         <v-btn color="warning" large v-else @click="restart">Restart</v-btn>
       </v-flex>
       <v-flex xs1 v-if="isStart">
-        <v-switch v-model="onlyNew" label="Only new" color="primary" :disabled="loading" class="only-switch"></v-switch>
+        <v-switch v-model="onlyNew" label="Only new" color="primary" class="only-switch"></v-switch>
       </v-flex>
       <v-flex xs2 v-if="isStart">
-        <v-switch v-model="reverseMode" label="Reverse mode" color="primary" :disabled="loading" class="only-switch"></v-switch>
+        <v-switch v-model="reverseMode" label="Reverse mode" color="primary" class="only-switch"></v-switch>
       </v-flex>
     </v-layout>
     <v-layout v-if="isStart">
@@ -41,7 +41,7 @@
             </div>
           </v-card-text>
           <v-card-actions class="pb-4">
-            <span>{{wordCount}} of {{words.length}}</span>
+            <span>{{wordCount}} of {{wordsLen}}</span>
             <v-spacer></v-spacer>
             <v-btn color="error" :disabled="!controls" @click="onRemember">I don't remember</v-btn>
             <v-btn color="success" :disabled="!controls" @click="onOk">OK</v-btn>
@@ -69,12 +69,16 @@
         wordCount: 0,
         isStart: false,
         onlyNew: false,
-        reverseMode: false
+        reverseMode: false,
+        wordsLength: 0
       }
     },
     computed: {
       words () {
         return this.$store.getters.words
+      },
+      wordsLen () {
+        return this.$store.getters.trainWordsLength
       },
       mainWord () {
         return this.$store.getters.mainTrainWord
@@ -86,7 +90,7 @@
         return this.$store.getters.trainWordsActive
       },
       percent () {
-        return this.wordCount / this.words.length * 100
+        return this.wordCount / this.wordsLen * 100
       },
       message () {
         return this.$store.getters.trainMessage
@@ -102,6 +106,7 @@
       start () {
         this.isStart = true
         this.$store.dispatch('trainStart')
+        this.wordsLength = this.words.length
       },
       restart () {
         this.$store.dispatch('trainRestart')
@@ -129,6 +134,14 @@
     watch: {
       reverseMode () {
         this.$store.commit('setTrainReverseMode', this.reverseMode)
+        this.$store.dispatch('trainStart')
+      },
+      onlyNew () {
+        this.$store.commit('setTrainOnlyNew', this.onlyNew)
+        this.$store.dispatch('trainOnlyNew')
+      },
+      wordsLength () {
+        this.$store.commit('setTrainWordsLength', this.wordsLength)
       }
     },
     beforeDestroy () {
