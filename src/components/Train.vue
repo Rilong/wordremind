@@ -59,6 +59,19 @@
         ><h3 class="text-xs-center" style="width: 100%; font-weight: normal">{{message.text}}</h3></v-snackbar>
       </template>
     </v-layout>
+    <v-layout v-if="win">
+      <v-flex xs6 offset-xs3 column>
+          <v-card>
+            <v-card-title>
+              <h2 class="text-xs-center" style="width: 100%">Train is finish</h2>
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              Your result is test
+            </v-card-text>
+          </v-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -70,7 +83,8 @@
         isStart: false,
         onlyNew: false,
         reverseMode: false,
-        wordsLength: 0
+        wordsLength: 0,
+        win: false
       }
     },
     computed: {
@@ -105,6 +119,8 @@
     methods: {
       start () {
         this.isStart = true
+        this.win = false
+        this.$store.dispatch('trainReset')
         this.$store.dispatch('trainStart')
         this.wordsLength = this.words.length
       },
@@ -128,7 +144,16 @@
           .then(() => {
             this.wordCount++
           })
-          .catch(() => {})
+            .catch(e => {
+              switch (e.message) {
+                case 'notSelected' :
+                  break
+                default:
+                  this.win = true
+                  this.isStart = false
+                  break
+              }
+            })
       }
     },
     watch: {
@@ -145,8 +170,11 @@
       }
     },
     beforeDestroy () {
+      this.isStart = false
+      this.win = false
       this.$store.commit('setTrainOnlyNew', false)
       this.$store.commit('setTrainReverseMode', false)
+      this.$store.dispatch('trainReset')
     }
   }
 </script>

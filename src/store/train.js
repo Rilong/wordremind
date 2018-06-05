@@ -2,14 +2,14 @@ import _ from 'lodash'
 
 export default {
   state: {
+    trainWordsLength: 0,
+    trainWordsMistakes: 0,
+    trainMessageTimeout: 2000,
     mainTrainWord: null,
     trainWords: null,
-    trainWordsLength: 0,
     trainWordsGood: null,
-    trainWordsMistakes: 0,
     trainWordsActive: null,
     trainMessage: null,
-    trainMessageTimeout: 2000,
     reverseMode: false,
     trainOnlyNew: false,
     trainControls: true
@@ -110,26 +110,26 @@ export default {
       let goodMessages = ['Good!', 'Excellent!', 'Wonderful!', 'Amazing!']
       let badMessages = ['It\'s mistake', 'Try one more time!']
 
-      if (typeof selected !== 'undefined') {
-        return new Promise((resolve, reject) => {
-          if (selected.word === mainWord.word) {
-            _.remove(words, o => o.word_id === mainWord.word_id)
-            commit('setTrainWords', words)
-            dispatch('setTrainGoodMessage', _.sample(goodMessages))
+      return new Promise((resolve, reject) => {
+        if (typeof selected === 'undefined') {
+          reject(new Error('notSelected'))
+        }
+        if (selected.word === mainWord.word) {
+          _.remove(words, o => o.word_id === mainWord.word_id)
+          commit('setTrainWords', words)
+          dispatch('setTrainGoodMessage', _.sample(goodMessages))
+          dispatch('trainStart')
+          resolve()
+        } else {
+          commit('setTrainControls', false)
+          dispatch('setTrainMistakeMessage', _.sample(badMessages))
+          dispatch('trainHighlight')
+          setTimeout(() => {
+            commit('setTrainControls', true)
             dispatch('trainStart')
-            resolve()
-          } else {
-            commit('setTrainControls', false)
-            dispatch('setTrainMistakeMessage', _.sample(badMessages))
-            dispatch('trainHighlight')
-            setTimeout(() => {
-              commit('setTrainControls', true)
-              dispatch('trainStart')
-            }, getters.trainMessageTimeout + 300)
-            reject(new Error('Mistake'))
-          }
-        })
-      }
+          }, getters.trainMessageTimeout + 300)
+        }
+      })
     },
     trainHighlight ({commit, getters}) {
       commit('setTrainHighlight', getters.mainTrainWord.word_id)
@@ -147,6 +147,14 @@ export default {
       }
       commit('setTrainWordsLength', getters.trainWords.length)
       dispatch('trainStart')
+    },
+    trainReset ({commit}) {
+      commit('setTrainWords', null)
+      commit('setMainWord', null)
+      commit('setTrainWordsActive', null)
+      commit('setTrainControls', true)
+      commit('setTrainWordsLength', 0)
+      commit('setTrainWordsMistakes', 0)
     }
   },
   getters: {
