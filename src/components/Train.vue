@@ -145,6 +145,7 @@
       }
     },
     beforeDestroy () {
+      this.$store.commit('setTrainOnlyNew', false)
       this.$store.commit('setTrainReverseMode', false)
     }
   }
