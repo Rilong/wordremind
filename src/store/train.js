@@ -132,8 +132,8 @@ export default {
           dispatch('trainStart')
           resolve()
         } else {
-          commit('setTrainWordsMistakes')
           commit('setTrainControls', false)
+          commit('setTrainWordsMistakes')
           dispatch('setTrainMistakeMessage', _.sample(badMessages))
           dispatch('trainHighlight')
           setTimeout(() => {
