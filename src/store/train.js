@@ -4,10 +4,11 @@ export default {
   state: {
     trainWordsLength: 0,
     trainWordsMistakes: 0,
+    trainWordsGood: 0,
+    trainWordsRight: 0,
     trainMessageTimeout: 2000,
     mainTrainWord: null,
     trainWords: null,
-    trainWordsGood: null,
     trainWordsActive: null,
     trainMessage: null,
     reverseMode: false,
@@ -22,10 +23,18 @@ export default {
       state.trainWords = payload
     },
     setTrainWordsGood (state, payload) {
-      state.trainWordsGood = payload
+      if (typeof payload !== 'undefined') {
+        state.trainWordsGood = payload
+      } else {
+        state.trainWordsGood++
+      }
     },
     setTrainWordsMistakes (state, payload) {
-      state.trainWordsMistakes = payload
+      if (typeof payload !== 'undefined') {
+        state.trainWordsMistakes = payload
+      } else {
+        state.trainWordsMistakes++
+      }
     },
     setTrainWordsActive (state, payload) {
       state.trainWordsActive = payload
@@ -114,13 +123,16 @@ export default {
         if (typeof selected === 'undefined') {
           reject(new Error('notSelected'))
         }
+        console.log(selected.word)
         if (selected.word === mainWord.word) {
           _.remove(words, o => o.word_id === mainWord.word_id)
           commit('setTrainWords', words)
+          commit('setTrainWordsGood')
           dispatch('setTrainGoodMessage', _.sample(goodMessages))
           dispatch('trainStart')
           resolve()
         } else {
+          commit('setTrainWordsMistakes')
           commit('setTrainControls', false)
           dispatch('setTrainMistakeMessage', _.sample(badMessages))
           dispatch('trainHighlight')
@@ -140,6 +152,7 @@ export default {
     trainOnlyNew ({commit, getters, dispatch}) {
       let onlyNew = getters.trainOnlyNew
       let words = _.clone(getters.words)
+      dispatch('trainReset', true)
       if (onlyNew) {
         commit('setTrainWords', _.dropRight(_.orderBy(words, ['created_date'], ['desc']), words.length - getters.perPage))
       } else {
@@ -148,13 +161,16 @@ export default {
       commit('setTrainWordsLength', getters.trainWords.length)
       dispatch('trainStart')
     },
-    trainReset ({commit}) {
+    trainReset ({commit}, payload) {
       commit('setTrainWords', null)
       commit('setMainWord', null)
       commit('setTrainWordsActive', null)
       commit('setTrainControls', true)
       commit('setTrainWordsLength', 0)
-      commit('setTrainWordsMistakes', 0)
+      if (payload === true) {
+        commit('setTrainWordsMistakes', 0)
+        commit('setTrainWordsGood', 0)
+      }
     }
   },
   getters: {

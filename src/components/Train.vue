@@ -60,15 +60,21 @@
       </template>
     </v-layout>
     <v-layout v-if="win">
-      <v-flex xs6 offset-xs3 column>
-          <v-card>
+      <v-flex xs4 offset-xs4 column>
+          <v-card class="win">
             <v-card-title>
               <h2 class="text-xs-center" style="width: 100%">Train is finish</h2>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              Your result is test
+              <div class="win-blocks">
+                <div class="win-block">{{trainWordsGood - trainWordsMistakes}}</div>
+                <div class="lose-block">{{trainWordsMistakes}}</div>
+              </div>
             </v-card-text>
+            <v-card-actions>
+              <v-btn color="warning" @click="restart" style="width: 100%">Restart</v-btn>
+            </v-card-actions>
           </v-card>
       </v-flex>
     </v-layout>
@@ -114,6 +120,12 @@
       },
       controls () {
         return this.$store.getters.trainControls
+      },
+      trainWordsGood () {
+        return this.$store.getters.trainWordsGood
+      },
+      trainWordsMistakes () {
+        return this.$store.getters.trainWordsMistakes
       }
     },
     methods: {
@@ -125,8 +137,11 @@
         this.wordsLength = this.words.length
       },
       restart () {
+        this.$store.dispatch('trainReset', true)
         this.$store.dispatch('trainRestart')
         this.wordCount = 0
+        this.isStart = true
+        this.win = false
       },
       onActive (id) {
         this.$store.commit('setTrainSelectedWord', id)
@@ -134,6 +149,7 @@
       onRemember () {
         this.$store.dispatch('trainHighlight')
         this.$store.commit('setTrainControls', false)
+        this.$store.commit('setTrainWordsMistakes')
         setTimeout(() => {
           this.$store.commit('setTrainControls', true)
           this.$store.dispatch('trainStart')
@@ -164,6 +180,7 @@
       onlyNew () {
         this.$store.commit('setTrainOnlyNew', this.onlyNew)
         this.$store.dispatch('trainOnlyNew')
+        this.wordCount = 0
       },
       wordsLength () {
         this.$store.commit('setTrainWordsLength', this.wordsLength)
@@ -174,7 +191,7 @@
       this.win = false
       this.$store.commit('setTrainOnlyNew', false)
       this.$store.commit('setTrainReverseMode', false)
-      this.$store.dispatch('trainReset')
+      this.$store.dispatch('trainReset', true)
     }
   }
 </script>
@@ -189,5 +206,34 @@
   .only-switch {
     position: relative;
     top: 12px;
+  }
+  .win-block {
+    width: 75px;
+    height: 75px;
+    border: #4caf50 solid 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .lose-block {
+    width: 75px;
+    height: 75px;
+    border: #D50000 solid 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .win-blocks {
+    display: flex;
+    justify-content: space-between;
+    margin: 50px 0;
   }
 </style>
