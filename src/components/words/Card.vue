@@ -12,6 +12,7 @@
             </v-card-text>
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
+            <v-icon class="mr-5 icon-sentence" v-if="word.sentences">subject</v-icon>
             <open-modal :word="word"></open-modal>
             <edit-modal :sentences="word.sentences" :word="word" :id="word.word_id"></edit-modal>
             <v-btn color="error btn-v-center" round :loading="deleteLoading" :disabled="deleteLoading" @click="deleteWord">Delete</v-btn>
@@ -78,6 +79,12 @@
     display: inline-block;
     overflow-x: hidden;
     white-space: nowrap;
+  }
+
+  .icon-sentence {
+    position: relative;
+    top: 10px;
+    opacity: .5;
   }
 
   .mr-6px {
