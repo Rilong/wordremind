@@ -19,6 +19,9 @@
                     <v-flex xs1>
                       <v-switch v-model="onlyNew" label="Only new" color="primary" :disabled="loading" class="only-switch"></v-switch>
                     </v-flex>
+                    <v-flex xs2>
+                      <v-text-field class="search" label="Search" @input="onSearch" v-model="search"></v-text-field>
+                    </v-flex>
                     <v-spacer></v-spacer>
                     <export-modal></export-modal>
                     <add-modal></add-modal>
@@ -54,6 +57,7 @@
   import wordCard from './words/Card'
   import addModal from './words/AddModal'
   import exportModal from './words/ExportModal'
+  import _ from 'lodash'
 
   export default {
     data () {
@@ -61,6 +65,7 @@
         name: 'home',
         sortState: false,
         onlyNew: this.$store.getters.onlyNew,
+        search: '',
         page: 1
       }
     },
@@ -88,6 +93,10 @@
       sort () {
         this.$store.dispatch('reverseWords')
         this.sortState = !this.sortState
+      },
+      onSearch () {
+        let filteredWords = _.filter(this.words, w => w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
+        this.$store.commit('setPagination', filteredWords)
       }
     },
     watch: {
@@ -116,6 +125,12 @@
 
 <style scoped>
 
+  .search {
+    position: relative;
+    top: -10px;
+    left: -40px;
+
+  }
   .only-switch {
     position: relative;
     top: 8px;
