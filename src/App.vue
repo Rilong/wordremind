@@ -110,9 +110,6 @@ export default {
     if (this.isUser) {
       this.$store.dispatch('getWords')
     }
-  },
-  components: {
-    settingsModal
   }
 }
 </script>
