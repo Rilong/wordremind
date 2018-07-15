@@ -56,14 +56,14 @@
         if (this.mode !== 'editing') {
           this.$store.dispatch('updateTmpSentences', {
             sentence: this.sentence,
-            translated: this.sentenceTranslated,
+            translated: this.sentenceTranslated.text,
             index: this.index
           })
           this.showEdit = false
         } else {
           this.$store.dispatch('editAdded', {
             sentence: this.sentence,
-            translated: this.sentenceTranslated,
+            translated: this.sentenceTranslated.text,
             index: this.index
           })
           this.showEdit = false
@@ -79,7 +79,7 @@
     },
     created () {
       this.sentence = this.current.sentence
-      this.sentenceTranslated = this.current.translated
+      this.sentenceTranslated = this.current.translated.text
     }
   }
 </script>

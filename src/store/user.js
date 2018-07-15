@@ -9,8 +9,8 @@ export default {
     }
   },
   actions: {
-    async registerUser ({commit, dispatch}, payload) {
-      let regRes = Vue.resource('/api/register.php')
+    async registerUser ({commit, dispatch, getters}, payload) {
+      let regRes = getters.userResource
       commit('setLoading', true)
       dispatch('cleanError')
 
@@ -35,8 +35,8 @@ export default {
         throw error
       }
     },
-    async loginUser ({commit, dispatch}, payload) {
-      let loginResource = Vue.resource('/api/login.php')
+    async loginUser ({commit, dispatch, getters}, payload) {
+      let loginResource = getters.userResource
       commit('setLoading', true)
       dispatch('cleanError')
       try {
@@ -48,7 +48,7 @@ export default {
         commit('setUser', user)
       } catch (error) {
         commit('setLoading', false)
-        commit('setError', error.body)
+        commit('setError', error.body.error)
         throw error
       }
     },

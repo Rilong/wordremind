@@ -10,10 +10,10 @@
          <v-icon left>{{link.icon}}</v-icon>
          {{link.title}}
        </v-btn>
-       <v-btn v-if="isUser" flat tag="button" @click.native="dialogSettings = true">
+    <!--   <v-btn v-if="isUser" flat tag="button" @click.native="dialogSettings = true">
            <v-icon left>settings</v-icon>
            Settings
-       </v-btn>
+       </v-btn>-->
        <v-btn v-if="isUser" flat tag="button" @click="onLogout">
          <v-icon left>exit_to_app</v-icon>
          Exit

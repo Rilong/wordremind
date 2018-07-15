@@ -116,7 +116,7 @@
         this.$store.dispatch('translate', {to: 'uk', text: this.wordname})
           .then(response => {
             this.localLoading = false
-            this.wordtranslated = response
+            this.wordtranslated = response.text
           }).catch(e => {
             this.localLoading = false
             console.log(e)

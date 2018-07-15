@@ -26,13 +26,13 @@ export default {
     }
   },
   actions: {
-    async translate ({commit}, payload) {
-      let translation = Vue.resource('/api/translate.php')
+    async translate ({commit, getters}, payload) {
+      let translation = getters.translateResource
       let text = await translation.get(payload)
       return text.body
     },
-    async saveWords ({commit, dispatch}, payload) {
-      let saveWord = Vue.resource('/api/saveword.php')
+    async saveWords ({commit, dispatch, getters}, payload) {
+      let saveWord = getters.wordResource
       commit('setLoading', true)
       let words = await saveWord.save({word: payload})
       commit('setLoading', false)
@@ -41,8 +41,9 @@ export default {
     },
     async getWords ({commit, getters}) {
       try {
+        let wordsResource = getters.wordsResource
         commit('setLoading', true)
-        let words = await Vue.http.get('/api/getwords.php', {params: {userId: getters.userId, settings: getters.settings}})
+        let words = await wordsResource.get({userId: getters.userId, settings: getters.settings})
         commit('setLoading', false)
         commit('setWords', words.body)
       } catch (e) {
@@ -52,9 +53,10 @@ export default {
         commit('setError', 'Error server: ' + e.statusText)
       }
     },
-    async deleteWord ({commit}, payload) {
+    async deleteWord ({commit, getters}, payload) {
+      let wordResource = getters.wordResource
       try {
-        let delWord = await Vue.http.post('/api/deleteword.php', payload)
+        let delWord = await wordResource.delete(payload)
         commit('setWords', delWord.body)
       } catch (e) {
         throw e
@@ -62,7 +64,8 @@ export default {
     },
     async saveEditing ({commit, getters}) {
       let editing = getters.getEditing
-      let words = await Vue.http.post('/api/saveediting.php', {editing, user_id: getters.userId})
+      let wordResource = getters.wordResource
+      let words = await wordResource.update({editing, user_id: getters.userId})
       commit('setWords', null)
       commit('setWords', words.body)
     },

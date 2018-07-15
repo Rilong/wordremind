@@ -7,7 +7,7 @@ import sentences from './sentences'
 import pagination from './pagination'
 import settings from './settings'
 import train from './train'
-
+import resources from './resourses'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,6 +18,7 @@ export default new Vuex.Store({
     sentences,
     pagination,
     settings,
-    train
+    train,
+    resources
   }
 })
