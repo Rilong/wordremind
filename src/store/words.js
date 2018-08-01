@@ -40,6 +40,8 @@ export default {
       dispatch('cleanTmpSentences')
     },
     async getWords ({commit, getters}) {
+      let token = JSON.parse(localStorage.getItem('token')).access_token
+      Vue.http.headers.common['Authorization'] = token
       try {
         let wordsResource = getters.wordsResource
         commit('setLoading', true)
