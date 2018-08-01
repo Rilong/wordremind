@@ -36,15 +36,16 @@ export default {
       }
     },
     async loginUser ({commit, dispatch, getters}, payload) {
-      let loginResource = getters.userResource
+      let loginResource = getters.authResource
       commit('setLoading', true)
       dispatch('cleanError')
       try {
-        let userResponse = await loginResource.get(payload)
+        let userResponse = await loginResource.save('/api/auth', payload)
         commit('setLoading', false)
 
         let user = userResponse.body
-        Vue.cookie.set('user', JSON.stringify(user), 30)
+        console.log(user)
+        localStorage.setItem('token', JSON.stringify(user.response))
         commit('setUser', user)
       } catch (error) {
         commit('setLoading', false)
@@ -52,15 +53,22 @@ export default {
         throw error
       }
     },
-    logoutUser ({commit, dispatch}) {
-      dispatch('cleanError')
-      commit('setUser', null)
-      commit('setWords', null)
-      Vue.cookie.delete('user')
+    async logoutUser ({commit, dispatch, getters}) {
+      let token = JSON.parse(localStorage.getItem('token')).access_token
+      let loginResource = getters.authResource
+      try {
+        await loginResource.delete(token)
+        dispatch('cleanError')
+        commit('setUser', null)
+        commit('setWords', null)
+        localStorage.removeItem('token')
+      } catch (error) {
+        commit('setError', error.body.error)
+      }
     },
     autoLogin ({commit}) {
-      let user = JSON.parse(Vue.cookie.get('user'))
-      commit('setUser', user)
+      let token = JSON.parse(localStorage.getItem('token'))
+      commit('setUser', token)
     }
   },
   getters: {

@@ -14,8 +14,8 @@ export default {
     translateResource (state) {
       return Vue.resource('/api/translate')
     },
-    userResource (state) {
-      return Vue.resource('/api/user')
+    authResource (state) {
+      return Vue.resource('/api/auth')
     },
     wordsResource (state) {
       return Vue.resource('/api/words')
