@@ -71,10 +71,6 @@ export default {
       commit('setWords', null)
       commit('setWords', words.body)
     },
-    reverseWords ({commit, getters}) {
-      let words = getters.words
-      commit('setPagination', _.reverse(words))
-    },
     addWordEditing ({commit, getters}, payload) {
       let editing = getters.getEditing
       if (editing === null) {

@@ -3,7 +3,7 @@ export default {
     onlyNew: false
   },
   mutations: {
-    setOnlyNew (state, payload) {
+    getOnlyNew (state, payload) {
       state.onlyNew = payload
     }
   },

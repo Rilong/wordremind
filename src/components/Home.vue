@@ -64,9 +64,10 @@
       return {
         name: 'home',
         sortState: false,
-        onlyNew: this.$store.getters.onlyNew,
+        onlyNew: false,
         search: '',
-        page: 1
+        page: 1,
+        wordsView: null
       }
     },
     computed: {
@@ -91,10 +92,22 @@
     },
     methods: {
       sort () {
-        this.$store.dispatch('reverseWords')
         this.sortState = !this.sortState
+        this.wordsView = this.getSort(this.wordsView)
+        this.$store.commit('setPagination', this.wordsView)
+      },
+      getSort (words) {
+        return _.reverse(_.clone(words))
+      },
+      getOnlyNew (words, perPage) {
+        if (this.onlyNew) {
+          this.page = 1
+          return _.dropRight(_.orderBy(words, ['created_date'], ['desc']), this.wordsView.length - perPage)
+        }
+        return this.words
       },
       onSearch () {
+        this.page = 1
         let filteredWords = _.filter(this.words, w => w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
         this.$store.commit('setPagination', filteredWords)
       }
@@ -104,15 +117,21 @@
         this.$store.commit('setActivePage', this.page)
       },
       words () {
-        this.$store.commit('setPagination', this.words)
+        this.wordsView = _.clone(this.words)
+        this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)
+        this.wordsView = this.getSort(this.wordsView)
+
+        this.$store.commit('setPagination', this.wordsView)
       },
       onlyNew () {
-        this.$store.commit('setOnlyNew', this.onlyNew)
-        this.$store.dispatch('getWords')
+        this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)
+
+        this.$store.commit('setPagination', this.wordsView)
       }
     },
     created () {
-      this.$store.commit('setPagination', this.words)
+      this.wordsView = _.clone(this.words)
+      this.$store.commit('setPagination', this.wordsView)
     },
     components: {
       appLogin,
@@ -133,7 +152,7 @@
   }
   .only-switch {
     position: relative;
-    top: 8px;
+    top: -8px;
     left: -30px;
   }
 
