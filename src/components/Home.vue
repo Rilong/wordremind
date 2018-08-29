@@ -10,10 +10,10 @@
                     <v-flex xs1>
                       <v-btn class="sort-btn" round color="primary" :disabled="loading" @click="sort">
                         Sort
-                        <transition name="sort" mode="out-in" :disabled="loading">
+                        <!--<transition name="sort" mode="out-in" :disabled="loading">-->
                           <v-icon v-if="!sortState" key="arrow-up">arrow_downward</v-icon>
                           <v-icon v-else key="arrow-down">arrow_upward</v-icon>
-                        </transition>
+                        <!--</transition>-->
                       </v-btn>
                     </v-flex>
                     <v-flex xs1>
