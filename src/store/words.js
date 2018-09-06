@@ -46,8 +46,11 @@ export default {
       } catch (e) {
         commit('setLoading', false)
         commit('setWords', null)
-        console.log(e)
-        commit('setError', 'Error server: ' + e.statusText)
+        if (e.status === 404) {
+          localStorage.clear()
+        } else {
+          commit('setError', 'Error server: ' + e.statusText)
+        }
       }
     },
     async deleteWord ({commit, getters}, payload) {
