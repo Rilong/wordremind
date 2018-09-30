@@ -37,6 +37,7 @@
     },
     methods: {
       deleteWord () {
+        this.$emit('delete')
         this.deleteLoading = true
         this.$store.dispatch('deleteWord', {data: this.word, id: this.word.word_id})
           .then(() => {

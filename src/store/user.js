@@ -48,7 +48,7 @@ export default {
         commit('setUser', user)
       } catch (error) {
         commit('setLoading', false)
-        commit('setError', error.body.error)
+        commit('setError', error.body.response)
         throw error
       }
     },

@@ -46,11 +46,13 @@ export default {
       } catch (e) {
         commit('setLoading', false)
         commit('setWords', null)
-        if (e.status === 404) {
+        if (e.status === 401) {
           localStorage.clear()
+          commit('setUser', null)
         } else {
           commit('setError', 'Error server: ' + e.statusText)
         }
+        throw e
       }
     },
     async deleteWord ({commit, getters}, payload) {
