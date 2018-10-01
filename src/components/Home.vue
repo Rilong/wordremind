@@ -123,7 +123,7 @@
         this.wordsView = _.clone(this.words)
         if (!this.isDeletedWord) {
           this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)
-          this.wordsView = this.getSort(this.wordsView)
+          this.wordsView = this.sortState ? this.getSort(this.wordsView) : this.wordsView
         }
         this.$store.commit('setPagination', this.wordsView)
         this.isDeletedWord = false
