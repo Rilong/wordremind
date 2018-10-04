@@ -202,7 +202,7 @@
         let numRangeTo = Number(this.rangeTo)
 
         if (numRangeFrom !== 0 && Number(this.rangeTo) !== 0) {
-          if ((numRangeFrom > 0 && numRangeFrom < this.wordsLength)) {
+          if ((numRangeFrom > 0 && numRangeFrom < this.wordsLength) && (numRangeTo > 1 && numRangeTo > numRangeFrom && numRangeTo <= this.wordsLength)) {
             this.$store.commit('setRange', [this.rangeFrom, this.rangeTo])
             this.$store.dispatch('trainStart')
             this.$store.dispatch('trainRange')
