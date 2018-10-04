@@ -3,14 +3,36 @@
     <v-layout>
       <v-flex xs1>
         <v-btn color="success" large v-if="!isStart" @click="start">Start</v-btn>
-        <v-btn color="warning" large v-else @click="restart">Restart</v-btn>
+        <template v-else>
+          <v-btn color="warning" large @click="restart">Restart</v-btn>
+        </template>
       </v-flex>
-      <v-flex xs1 v-if="isStart">
-        <v-switch v-model="onlyNew" label="Only new" color="primary" class="only-switch"></v-switch>
-      </v-flex>
-      <v-flex xs2 v-if="isStart">
-        <v-switch v-model="reverseMode" label="Reverse mode" color="primary" class="only-switch"></v-switch>
-      </v-flex>
+      <template v-if="isStart">
+        <v-flex xs1>
+          <v-switch v-model="onlyNew" label="Only new" color="primary" class="only-switch"></v-switch>
+        </v-flex>
+        <v-flex xs1>
+          <v-switch v-model="reverseMode" label="Reverse mode" color="primary" class="only-switch"></v-switch>
+        </v-flex>
+        <v-flex xs1>
+          <v-text-field
+              label="Range from"
+              box
+              mask="############"
+              @input="changeRange"
+              v-model="rangeFrom"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs1>
+          <v-text-field
+              label="Range to"
+              box
+              mask="############"
+              @input="changeRange"
+              v-model="rangeTo"
+          ></v-text-field>
+        </v-flex>
+      </template>
     </v-layout>
     <v-layout v-if="isStart">
       <v-flex xs6 offset-xs3 column>
@@ -90,7 +112,9 @@
         onlyNew: false,
         reverseMode: false,
         wordsLength: 0,
-        win: false
+        win: false,
+        rangeFrom: 1,
+        rangeTo: 0
       }
     },
     computed: {
@@ -135,6 +159,7 @@
         this.$store.dispatch('trainReset')
         this.$store.dispatch('trainStart')
         this.wordsLength = this.words.length
+        this.rangeTo = this.wordsLength
       },
       restart () {
         this.$store.dispatch('trainReset', true)
@@ -170,6 +195,11 @@
                   break
               }
             })
+      },
+      changeRange () {
+        if (Number(this.rangeFrom) !== 0 && Number(this.rangeTo) !== 0) {
+          console.log(this.rangeFrom, this.rangeTo)
+        }
       }
     },
     watch: {
