@@ -156,10 +156,11 @@
       start () {
         this.isStart = true
         this.win = false
-        this.$store.dispatch('trainReset')
-        this.$store.dispatch('trainStart')
         this.wordsLength = this.words.length
         this.rangeTo = this.wordsLength
+        this.$store.commit('setRange', [this.rangeFrom, this.rangeTo])
+        this.$store.dispatch('trainReset')
+        this.$store.dispatch('trainStart')
       },
       restart () {
         this.$store.dispatch('trainReset', true)
@@ -197,8 +198,16 @@
             })
       },
       changeRange () {
-        if (Number(this.rangeFrom) !== 0 && Number(this.rangeTo) !== 0) {
-          console.log(this.rangeFrom, this.rangeTo)
+        let numRangeFrom = Number(this.rangeFrom)
+        let numRangeTo = Number(this.rangeTo)
+
+        if (numRangeFrom !== 0 && Number(this.rangeTo) !== 0) {
+          if ((numRangeFrom > 0 && numRangeFrom < this.wordsLength)) {
+            this.$store.commit('setRange', [this.rangeFrom, this.rangeTo])
+            this.$store.dispatch('trainStart')
+            this.$store.dispatch('trainRange')
+            this.wordCount = 0
+          }
         }
       }
     },

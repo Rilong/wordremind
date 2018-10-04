@@ -13,7 +13,8 @@ export default {
     trainMessage: null,
     reverseMode: false,
     trainOnlyNew: false,
-    trainControls: true
+    trainControls: true,
+    range: [null, null]
   },
   mutations: {
     setMainWord (state, payload) {
@@ -68,6 +69,9 @@ export default {
     },
     setTrainWordsLength (state, payload) {
       state.trainWordsLength = payload
+    },
+    setRange (state, payload) {
+      state.range = payload
     }
   },
   actions: {
@@ -171,6 +175,15 @@ export default {
         commit('setTrainWordsMistakes', 0)
         commit('setTrainWordsGood', 0)
       }
+    },
+    trainRange ({commit, getters, dispatch}) {
+      commit('setTrainWords', getters.words)
+      dispatch('trainOnlyNew')
+      let range = getters.range
+      let words = getters.trainWords
+      words = _.slice(words, range[0] - 1, range[1] - 1)
+      commit('setTrainWords', words)
+      commit('setTrainWordsLength', getters.trainWords.length)
     }
   },
   getters: {
@@ -209,6 +222,9 @@ export default {
     },
     selected (state) {
       return _.find(state.trainWordsActive, {active: true})
+    },
+    range (state) {
+      return state.range
     }
   }
 }
