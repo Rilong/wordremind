@@ -201,9 +201,6 @@
         let numRangeFrom = Number(this.rangeFrom)
         let numRangeTo = Number(this.rangeTo)
 
-        /*
-        * Todo: Fix Bug
-        * */
         if (numRangeFrom !== 0 && Number(this.rangeTo) !== 0) {
           if ((numRangeFrom > 0 && numRangeFrom < this.wordsLength) && (numRangeTo > 1 && numRangeTo > numRangeFrom && numRangeTo <= this.wordsLength)) {
             this.$store.commit('setRange', [this.rangeFrom, this.rangeTo])

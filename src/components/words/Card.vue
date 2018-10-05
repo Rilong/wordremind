@@ -12,6 +12,7 @@
             </v-card-text>
           </v-flex>
           <v-flex xs class="text-xs-right align-center pt-2 btns">
+            <i class="gray-text num">{{word.num}}</i>
             <v-icon class="mr-5 icon-sentence" v-if="word.sentences">subject</v-icon>
             <open-modal :word="word"></open-modal>
             <edit-modal :sentences="word.sentences" :word="word" :id="word.word_id"></edit-modal>
@@ -56,6 +57,12 @@
 </script>
 
 <style scoped>
+  .num, .num.gray-text {
+    position: relative;
+    top: 13px;
+    font-size: 15px;
+    font-style: normal;
+  }
   .my-d-flex {
     display: flex;
   }
