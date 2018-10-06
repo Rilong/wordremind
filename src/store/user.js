@@ -44,12 +44,11 @@ export default {
         commit('setLoading', false)
 
         let user = userResponse.body
-        console.log(user)
         localStorage.setItem('token', JSON.stringify(user.response))
         commit('setUser', user)
       } catch (error) {
         commit('setLoading', false)
-        commit('setError', error.body.error)
+        commit('setError', error.body.response)
         throw error
       }
     },

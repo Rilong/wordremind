@@ -18,26 +18,33 @@
                 </v-flex>
               </v-layout>
               <v-layout>
-                <v-flex xs9>
+                <v-flex xs12>
                   <v-text-field
                     v-model="wordtranslated"
                     label="Word translated"
                     required
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs3 class="text-xs-right">
-                  <v-btn color="primary" @click="onTranslate" :loading="localLoading">Translate</v-btn>
-                </v-flex>
               </v-layout>
               <v-layout>
-                <v-flex xs9>
+                <v-flex xs12>
                   <v-text-field
                     v-model="sentence"
                     label="Sentence"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs3 class="text-xs-right">
-                  <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
+              </v-layout>
+              <v-layout>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="sentenceTranslated"
+                    label="Sentence translation"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex xs12 class="text-xs-right">
+                 <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
               <v-layout v-if="sentences">
@@ -71,6 +78,7 @@
         valid: false,
         localLoading: false,
         sentence: '',
+        sentenceTranslated: '',
         editSentence: '',
         sentenceLoading: false
       }
@@ -91,6 +99,8 @@
         this.modal = false
         this.wordname = ''
         this.wordtranslated = ''
+        this.sentence = ''
+        this.sentenceTranslated = ''
         this.$store.dispatch('cleanTmpSentences')
       },
       onSave () {
@@ -104,6 +114,8 @@
             .then(response => {
               this.wordname = ''
               this.wordtranslated = ''
+              this.sentence = ''
+              this.sentenceTranslated = ''
               this.modal = false
             })
             .catch(e => {
@@ -111,35 +123,14 @@
             })
         }
       },
-      onTranslate () {
-        this.localLoading = true
-        this.$store.dispatch('translate', {to: 'uk', text: this.wordname})
-          .then(response => {
-            this.localLoading = false
-            this.wordtranslated = response.text
-          }).catch(e => {
-            this.localLoading = false
-            console.log(e)
-          })
-      },
       onAddSentence () {
-        this.sentenceLoading = true
-        this.$store.dispatch('translate', {to: 'uk', text: this.sentence})
-          .then(response => {
-            this.sentenceLoading = false
-            let sentenceObj = {
-              sentence: this.sentence,
-              translated: response
-            }
-
-            this.$store.dispatch('tmpSentencesAction', sentenceObj)
-            this.sentence = ''
-          })
-          .catch(e => {
-            this.sentence = ''
-            this.sentenceLoading = false
-            console.log(e)
-          })
+        let sentenceObj = {
+          sentence: this.sentence,
+          translated: this.sentenceTranslated
+        }
+        this.$store.dispatch('tmpSentencesAction', sentenceObj)
+        this.sentence = ''
+        this.sentenceTranslated = ''
       }
     },
     components: {

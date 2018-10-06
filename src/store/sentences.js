@@ -25,10 +25,9 @@ export default {
   },
   actions: {
     async addSentence ({commit, getters, dispatch}, payload) {
-      let translated = await dispatch('translate', {text: payload.sentence, to: 'uk'})
       let obj = {
         sentence: payload.sentence,
-        translated: translated,
+        translated: payload.translated,
         status: 'added'
       }
       let editing = getters.getEditing

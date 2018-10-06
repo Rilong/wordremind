@@ -79,7 +79,7 @@
     },
     created () {
       this.sentence = this.current.sentence
-      this.sentenceTranslated = this.current.translated.text
+      this.sentenceTranslated = this.current.translated
     }
   }
 </script>

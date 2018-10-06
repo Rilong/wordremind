@@ -5,7 +5,7 @@
           <v-layout>
             <v-flex>
               <v-container grid-list-lg>
-                <div class="mb-4 mt-2" v-if="words">
+                <div class="mb-2 mt-2" v-if="words">
                   <v-layout>
                     <v-flex xs1>
                       <v-btn class="sort-btn" round color="primary" :disabled="loading" @click="sort">
@@ -26,7 +26,8 @@
                   </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
-                  <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word"></word-card>
+                  <span class="mb-3 d-block">Words count: {{words.length}}</span>
+                  <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word" v-on:delete="deleteWord"></word-card>
                   <div class="text-xs-center" v-if="pagination.length > perPage">
                     <v-pagination :length="pagination.length" :total-visible="7" v-model="page" circle></v-pagination>
                   </div>
@@ -65,7 +66,8 @@
         onlyNew: false,
         search: '',
         page: 1,
-        wordsView: null
+        wordsView: null,
+        isDeletedWord: false
       }
     },
     computed: {
@@ -106,8 +108,14 @@
       },
       onSearch () {
         this.page = 1
-        let filteredWords = _.filter(this.words, w => w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
+        let filteredWords = _.filter(this.words, w => {
+          return w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1 || w.word_translation.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+        })
         this.$store.commit('setPagination', filteredWords)
+      },
+      deleteWord () {
+        console.log('Delete word')
+        this.isDeletedWord = true
       }
     },
     watch: {
@@ -116,10 +124,12 @@
       },
       words () {
         this.wordsView = _.clone(this.words)
-        this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)
-        this.wordsView = this.getSort(this.wordsView)
-
+        if (!this.isDeletedWord) {
+          this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)
+          this.wordsView = this.sortState ? this.getSort(this.wordsView) : this.wordsView
+        }
         this.$store.commit('setPagination', this.wordsView)
+        this.isDeletedWord = false
       },
       onlyNew () {
         this.wordsView = this.getOnlyNew(this.wordsView, this.perPage)

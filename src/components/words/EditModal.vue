@@ -19,13 +19,23 @@
                       required
               ></v-text-field>
               <v-layout>
-                <v-flex xs9>
+                <v-flex xs12>
                   <v-text-field
                           v-model="sentence"
                           label="Sentence"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs3 class="text-xs-right">
+              </v-layout>
+              <v-layout>
+                <v-flex xs12>
+                  <v-text-field
+                          v-model="sentenceTranslated"
+                          label="Sentence translation"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex xs12 class="text-xs-right">
                   <v-btn color="success" @click="onAddSentence" :loading="sentenceLoading" :disabled="sentenceLoading || localLoading">Add sentence</v-btn>
                 </v-flex>
               </v-layout>
@@ -60,6 +70,7 @@
         valid: false,
         sentenceLoading: false,
         sentence: '',
+        sentenceTranslated: '',
         changes: '',
         tmpSentences: '',
         localLoading: false
@@ -77,6 +88,7 @@
         this.$store.dispatch('clearEditingSentence')
         this.tmpSentences = ''
         this.sentence = ''
+        this.sentenceTranslated = ''
       },
       onSave: function () {
         let obj = {
@@ -97,6 +109,7 @@
               this.$store.dispatch('clearEditingSentence')
               this.$store.dispatch('cleanTmpSentences')
               this.sentence = ''
+              this.sentenceTranslated = ''
               this.tmpSentences = ''
               this.changes = 'save'
               this.modal = false
@@ -105,11 +118,12 @@
       },
       onAddSentence () {
         this.sentenceLoading = true
-        this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence})
+        this.$store.dispatch('addSentence', {wordId: this.id, sentence: this.sentence, translated: this.sentenceTranslated})
           .then(response => {
             this.sentenceLoading = false
             this.tmpSentences = this.$store.getters.getEditing['added']
             this.sentence = ''
+            this.sentenceTranslated = ''
           })
           .catch(e => {
             this.sentenceLoading = false

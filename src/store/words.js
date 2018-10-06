@@ -26,11 +26,6 @@ export default {
     }
   },
   actions: {
-    async translate ({commit, getters}, payload) {
-      let translation = getters.translateResource
-      let text = await translation.get(payload)
-      return text.body
-    },
     async saveWords ({commit, dispatch, getters}, payload) {
       let saveWord = getters.wordResource
       commit('setLoading', true)
@@ -51,8 +46,13 @@ export default {
       } catch (e) {
         commit('setLoading', false)
         commit('setWords', null)
-        console.log(e)
-        commit('setError', 'Error server: ' + e.statusText)
+        if (e.status === 401) {
+          localStorage.clear()
+          commit('setUser', null)
+        } else {
+          commit('setError', 'Error server: ' + e.statusText)
+        }
+        throw e
       }
     },
     async deleteWord ({commit, getters}, payload) {
@@ -67,7 +67,8 @@ export default {
     async saveEditing ({commit, getters}) {
       let editing = getters.getEditing
       let wordResource = getters.wordResource
-      let words = await wordResource.update({editing, user_id: getters.userId})
+      let words = await wordResource.update({editing})
+      console.log(words)
       commit('setWords', null)
       commit('setWords', words.body)
     },

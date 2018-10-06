@@ -108,7 +108,11 @@ export default {
   created () {
     this.$store.dispatch('autoLogin')
     if (this.isUser) {
-      this.$store.dispatch('getWords')
+      this.$store.dispatch('getWords').then(null, e => {
+        if (e.status === 401) {
+          this.$router.push('/')
+        }
+      })
     }
   }
 }
