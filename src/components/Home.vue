@@ -108,7 +108,9 @@
       },
       onSearch () {
         this.page = 1
-        let filteredWords = _.filter(this.words, w => w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
+        let filteredWords = _.filter(this.words, w => {
+          return w.word.toLowerCase().indexOf(this.search.toLowerCase()) > -1 || w.word_translation.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+        })
         this.$store.commit('setPagination', filteredWords)
       },
       deleteWord () {
