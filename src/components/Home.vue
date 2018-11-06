@@ -26,7 +26,7 @@
                   </v-layout>
                 </div>
                 <template v-if="!loading && words !== null">
-                  <span class="mb-3 d-block">Words count: {{words.length}}</span>
+                  <span class="mb-3 d-block">Words count: {{words.length + 1}}</span>
                   <word-card v-for="(word) in pagination[activePage - 1]" :key="'wordid' + word.word_id" :word="word" v-on:delete="deleteWord"></word-card>
                   <div class="text-xs-center" v-if="pagination.length > perPage">
                     <v-pagination :length="pagination.length" :total-visible="7" v-model="page" circle></v-pagination>
